@@ -14,6 +14,7 @@ export default function PreferenceTile({ title, desc, isSelected, onClick }) {
           : "3px solid transparent",
         transition: "0.2s ease",
         userSelect: "none",
+        textAlign: "center",  
       }}
     >
       <div

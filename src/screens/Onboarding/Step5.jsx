@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import colors from "../../styles/colors";
 import PrimaryButton from "../../components/PrimaryButton";
 import step5img from "../../assets/images/onboarding/step5.png";
@@ -49,95 +50,107 @@ export default function Step5({ onFinish }) {
         alignItems: "center",
       }}
     >
-      {/* Scale */}
-      <div
+      {/* Smooth animated content wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
           width: "760px",
         }}
       >
-        {/* ILLUSTRATION */}
-        <div style={{ textAlign: "center" }}>
-          <img
-            src={step5img}
-            alt="All Set"
-            style={{
-              width: "330px",
-              maxWidth: "90%",
-              marginBottom: "30px",
-            }}
-          />
-        </div>
-
-        {/* WHITE CARD */}
+        {/* Scale */}
         <div
           style={{
-            backgroundColor: colors.whiteSoft,
-            padding: "45px 50px",
-            borderRadius: "35px",
-            boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+            width: "760px",
           }}
         >
-          <h2
-            style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: colors.purpleDark,
-              margin: 0,
-            }}
-          >
-            You’re all set!
-          </h2>
+          {/* ILLUSTRATION */}
+          <div style={{ textAlign: "center" }}>
+            <img
+              src={step5img}
+              alt="All Set"
+              style={{
+                width: "330px",
+                maxWidth: "90%",
+                marginBottom: "30px",
+              }}
+            />
+          </div>
 
-          <p
-            style={{
-              marginTop: "10px",
-              fontSize: "18px",
-              opacity: 0.9,
-              color: colors.dark,
-              lineHeight: "1.5",
-              maxWidth: "85%",
-            }}
-          >
-            Together, we light the way to safer journeys.
-          </p>
-
-          {/* BUTTONS ROW */}
+          {/* WHITE CARD */}
           <div
             style={{
-              marginTop: "30px",
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              backgroundColor: colors.whiteSoft,
+              padding: "45px 50px",
+              borderRadius: "35px",
+              boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
             }}
           >
-            {/* ⭐ DEV-ONLY RESET BUTTON */}
-            {process.env.NODE_ENV === "development" && (
-              <button
-                onClick={handleReset}
-                style={{
-                  background: "transparent",
-                  border: "2px solid #aaa",
-                  color: "#666",
-                  padding: "10px 18px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                }}
-              >
-                Reset onboarding
-              </button>
-            )}
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                margin: 0,
+              }}
+            >
+              You’re all set!
+            </h2>
 
-            {/* FINISH BUTTON */}
-            <PrimaryButton onClick={onFinish}>
-              Start your journey
-            </PrimaryButton>
+            <p
+              style={{
+                marginTop: "10px",
+                fontSize: "18px",
+                opacity: 0.9,
+                color: colors.dark,
+                lineHeight: "1.5",
+                maxWidth: "85%",
+              }}
+            >
+              Together, we light the way to safer journeys.
+            </p>
+
+            {/* BUTTONS ROW */}
+            <div
+              style={{
+                marginTop: "30px",
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              {/* ⭐ DEV-ONLY RESET BUTTON */}
+              {process.env.NODE_ENV === "development" && (
+                <button
+                  onClick={handleReset}
+                  style={{
+                    background: "transparent",
+                    border: "2px solid #aaa",
+                    color: "#666",
+                    padding: "10px 18px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Reset onboarding
+                </button>
+              )}
+
+              {/* FINISH BUTTON */}
+              <PrimaryButton onClick={onFinish}>
+                Start your journey
+              </PrimaryButton>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

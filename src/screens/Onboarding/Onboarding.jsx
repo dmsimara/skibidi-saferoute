@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Step4 from "./Step4";
-import Step5 from "./Step5";    
+import Step5 from "./Step5";
 
 import { loadStep, saveStep } from "../../utils/preferences";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
+
   // Load saved step or default to 1
   const [step, setStep] = useState(loadStep());
 
@@ -44,9 +48,7 @@ export default function Onboarding() {
 
       {step === 5 && (
         <Step5
-          onFinish={() => {
-            console.log("Onboarding complete!");
-          }}
+          onFinish={() => navigate("/home")}
         />
       )}
     </>

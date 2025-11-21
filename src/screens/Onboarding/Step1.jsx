@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import colors from "../../styles/colors";
 import step1 from "../../assets/images/onboarding/step1.png";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -43,59 +44,75 @@ export default function Step1({ onNext }) {
         background: `radial-gradient(circle, ${colors.offWhite} 0%, ${colors.purpleLight} 100%)`,
       }}
     >
-      <div
+      {/* Smooth animated content wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
           width: "760px",
         }}
       >
-        <div style={{ textAlign: "center" }}>
-          <img
-            src={step1}
-            alt="Step 1"
-            style={{ width: "330px", maxWidth: "100%" }}
-          />
-        </div>
-
         <div
           style={{
-            backgroundColor: colors.whiteSoft,
-            padding: "40px",
-            marginTop: "30px",
-            borderRadius: "35px",
-            boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+            width: "760px",
           }}
         >
-          <h2
+          <div style={{ textAlign: "center" }}>
+            <img
+              src={step1}
+              alt="Step 1"
+              style={{ width: "330px", maxWidth: "100%" }}
+            />
+          </div>
+
+          <div
             style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: colors.purpleDark,
-              margin: 0,
+              backgroundColor: colors.whiteSoft,
+              padding: "40px",
+              marginTop: "30px",
+              borderRadius: "35px",
+              boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",      
+              textAlign: "center",
             }}
           >
-            Light the way for you and others.
-          </h2>
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                margin: 0,
+              }}
+            >
+              Light the way for you and others.
+            </h2>
 
-          <p
-            style={{
-              marginTop: "20px",
-              fontSize: "20px",
-              opacity: 0.9,
-              lineHeight: "1.6",
-              maxWidth: "95%",
-            }}
-          >
-            Find safer routes. Share insights. Travel with confidence.
-            Every report, reminder, and act of care helps make our community safer.
-          </p>
+            <p
+              style={{
+                marginTop: "20px",
+                fontSize: "20px",
+                opacity: 0.9,
+                lineHeight: "1.6",
+                maxWidth: "90%",
+              }}
+            >
+              Find safer routes. Share insights. Travel with confidence.
+              Every report, reminder, and act of care helps make our community safer.
+            </p>
 
-          <div style={{ marginTop: "15px", display: "flex", justifyContent: "flex-end" }}>
-            <PrimaryButton onClick={onNext}>Next</PrimaryButton>
+            <div style={{ marginTop: "15px", width: "100%", display: "flex", justifyContent: "flex-end" }}>
+              <PrimaryButton onClick={onNext}>Next</PrimaryButton>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import colors from "../../styles/colors";
 import PrimaryButton from "../../components/PrimaryButton";
 import OutlineButton from "../../components/OutlineButton";
@@ -68,119 +69,131 @@ export default function Step4({ onNext, onBack }) {
         alignItems: "center",
       }}
     >
-      {/* Scaled container */}
-      <div
+      {/* Smooth animated content wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
           width: "760px",
         }}
       >
-        {/* CARD */}
+        {/* Scaled container */}
         <div
           style={{
-            backgroundColor: colors.whiteSoft,
-            padding: "40px",
-            borderRadius: "35px",
-            boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
-            position: "relative",
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+            width: "760px",
           }}
         >
-          {/* Illustration inside the card */}
-          <img
-            src={step4img}
-            alt="Preferences"
-            style={{
-              position: "absolute",
-              top: "40px",
-              right: "50px",
-              width: "140px",
-              height: "auto",
-            }}
-          />
-
-          {/* Title */}
-          <h2
-            style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: colors.purpleDark,
-              margin: 0,
-            }}
-          >
-            You are in control
-          </h2>
-
-          {/* Subtitle */}
-          <p
-            style={{
-              marginTop: "12px",
-              fontSize: "20px",
-              opacity: 0.9,
-              lineHeight: "1.5",
-              width: "60%",
-            }}
-          >
-            Choose what matters most for your route. Pick as many as you like.
-          </p>
-
-          {/* GRID OPTIONS */}
+          {/* CARD */}
           <div
             style={{
-              marginTop: "32px",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              width: "100%",
+              backgroundColor: colors.whiteSoft,
+              padding: "40px",
+              borderRadius: "35px",
+              boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
+              position: "relative",
             }}
           >
-            {options.map((opt) => (
-              <PreferenceTile
-                key={opt.key}
-                title={opt.title}
-                desc={opt.desc}
-                isSelected={selected.includes(opt.key)}
-                onClick={() => toggleSelect(opt.key)}
-              />
-            ))}
-          </div>
+            {/* Illustration inside the card */}
+            <img
+              src={step4img}
+              alt="Preferences"
+              style={{
+                position: "absolute",
+                top: "40px",
+                right: "50px",
+                width: "140px",
+                height: "auto",
+              }}
+            />
 
-          {/* BUTTONS */}
-          <div
-            style={{
-              marginTop: "35px",
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "12px",
-            }}
-          >
-            <OutlineButton onClick={onBack}>Back</OutlineButton>
-            <PrimaryButton
-              onClick={() => {
-                saveRoutePreferences(selected);
-                onNext();
+            {/* Title */}
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                margin: 0,
               }}
             >
-              Next
-            </PrimaryButton>
-          </div>
-        </div>
+              You are in control
+            </h2>
 
-        {/* FOOTER (outside card, scaled with everything) */}
-        <p
-          style={{
-            marginTop: "16px",
-            fontSize: "14px",
-            opacity: 0.75,
-            textAlign: "center",
-            color: colors.dark,
-            maxWidth: "100%",
-          }}
-        >
-          Your privacy is our priority. You can modify these settings anytime in your
-          Privacy Dashboard.
-        </p>
-      </div>
+            {/* Subtitle */}
+            <p
+              style={{
+                marginTop: "12px",
+                fontSize: "20px",
+                opacity: 0.9,
+                lineHeight: "1.5",
+                width: "60%",
+              }}
+            >
+              Choose what matters most for your route. Pick as many as you like.
+            </p>
+
+            {/* GRID OPTIONS */}
+            <div
+              style={{
+                marginTop: "32px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                width: "100%",
+              }}
+            >
+              {options.map((opt) => (
+                <PreferenceTile
+                  key={opt.key}
+                  title={opt.title}
+                  desc={opt.desc}
+                  isSelected={selected.includes(opt.key)}
+                  onClick={() => toggleSelect(opt.key)}
+                />
+              ))}
+            </div>
+
+            {/* BUTTONS */}
+            <div
+              style={{
+                marginTop: "35px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "12px",
+              }}
+            >
+              <OutlineButton onClick={onBack}>Back</OutlineButton>
+              <PrimaryButton
+                onClick={() => {
+                  saveRoutePreferences(selected);
+                  onNext();
+                }}
+              >
+                Next
+              </PrimaryButton>
+            </div>
+          </div>
+
+          {/* FOOTER (outside card, scaled with everything) */}
+          <p
+            style={{
+              marginTop: "16px",
+              fontSize: "14px",
+              opacity: 0.75,
+              textAlign: "center",
+              color: colors.dark,
+              maxWidth: "100%",
+            }}
+          >
+            Your privacy is our priority. You can modify these settings anytime in your
+            Privacy Dashboard.
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }

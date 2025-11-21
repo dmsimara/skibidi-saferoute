@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Splash from "./screens/Splash/Splash";
 import Onboarding from "./screens/Onboarding/Onboarding";
 import { useNavigate } from "react-router-dom";
+import Home from "./screens/Home/Home";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function AppRoutes() {
       />
 
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   );
 }

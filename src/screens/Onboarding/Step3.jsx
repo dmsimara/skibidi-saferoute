@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import colors from "../../styles/colors";
 import PrimaryButton from "../../components/PrimaryButton";
 import OutlineButton from "../../components/OutlineButton";
@@ -67,148 +68,160 @@ export default function Step3({ onNext, onBack }) {
         alignItems: "center",
       }}
     >
-      {/* Scaled container */}
-      <div
+      {/* Smooth animated content wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
           transform: `scale(${scale})`,
-          transformOrigin: "center center",
-          width: "750px",
+          transformOrigin: "center",
+          width: "760px",
         }}
       >
-        {/* WHITE CARD */}
+        {/* Scaled container */}
         <div
           style={{
-            backgroundColor: colors.whiteSoft,
-            borderRadius: "32px",
-            padding: "35px 40px",
-            boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
-            boxSizing: "border-box",
+            transform: `scale(${scale})`,
+            transformOrigin: "center center",
+            width: "750px",
           }}
         >
-          <h2
-            style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: colors.purpleDark,
-              margin: 0,
-            }}
-          >
-            You are in control
-          </h2>
-
-          <p
-            style={{
-              marginTop: "10px",
-              fontSize: "18px",
-              color: colors.dark,
-              opacity: 0.9,
-            }}
-          >
-            Choose what you share, how you connect, and when you’re visible.
-          </p>
-
-          {/* TOGGLES */}
+          {/* WHITE CARD */}
           <div
             style={{
-              marginTop: "25px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "14px",
+              backgroundColor: colors.whiteSoft,
+              borderRadius: "32px",
+              padding: "35px 40px",
+              boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
+              boxSizing: "border-box",
             }}
           >
-            <ToggleSwitch
-              title="Location Sharing"
-              description="Allow app to use your location while navigating."
-              isOn={toggles.location}
-              onToggle={() => switchToggle("location")}
-            />
-            <ToggleSwitch
-              title="Data Sharing"
-              description="Decide what information the app can collect."
-              isOn={toggles.data}
-              onToggle={() => switchToggle("data")}
-            />
-            <ToggleSwitch
-              title="Anonymous Reporting"
-              description="Report safety concerns without revealing your identity."
-              isOn={toggles.anonymous}
-              onToggle={() => switchToggle("anonymous")}
-            />
-            <ToggleSwitch
-              title="Notifications and Alerts"
-              description="Get updates about hazards and road changes."
-              isOn={toggles.alerts}
-              onToggle={() => switchToggle("alerts")}
-            />
-            <ToggleSwitch
-              title="Emergency Contacts"
-              description="Let trusted people be alerted in case of emergency."
-              isOn={toggles.emergency}
-              onToggle={() => switchToggle("emergency")}
-            />
-          </div>
-
-          {/* BUTTONS */}
-          <div
-            style={{
-              marginTop: "30px",
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "12px",
-            }}
-          >
-            <OutlineButton onClick={onBack}>Back</OutlineButton>
-
-            {/* ⭐ Save privacy settings before moving to Step4 */}
-            <PrimaryButton
-              onClick={() => {
-                savePrivacySettings(toggles);
-                onNext();
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                margin: 0,
               }}
             >
-              Next
-            </PrimaryButton>
+              You are in control
+            </h2>
+
+            <p
+              style={{
+                marginTop: "10px",
+                fontSize: "18px",
+                color: colors.dark,
+                opacity: 0.9,
+              }}
+            >
+              Choose what you share, how you connect, and when you’re visible.
+            </p>
+
+            {/* TOGGLES */}
+            <div
+              style={{
+                marginTop: "25px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+              }}
+            >
+              <ToggleSwitch
+                title="Location Sharing"
+                description="Allow app to use your location while navigating."
+                isOn={toggles.location}
+                onToggle={() => switchToggle("location")}
+              />
+              <ToggleSwitch
+                title="Data Sharing"
+                description="Decide what information the app can collect."
+                isOn={toggles.data}
+                onToggle={() => switchToggle("data")}
+              />
+              <ToggleSwitch
+                title="Anonymous Reporting"
+                description="Report safety concerns without revealing your identity."
+                isOn={toggles.anonymous}
+                onToggle={() => switchToggle("anonymous")}
+              />
+              <ToggleSwitch
+                title="Notifications and Alerts"
+                description="Get updates about hazards and road changes."
+                isOn={toggles.alerts}
+                onToggle={() => switchToggle("alerts")}
+              />
+              <ToggleSwitch
+                title="Emergency Contacts"
+                description="Let trusted people be alerted in case of emergency."
+                isOn={toggles.emergency}
+                onToggle={() => switchToggle("emergency")}
+              />
+            </div>
+
+            {/* BUTTONS */}
+            <div
+              style={{
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "12px",
+              }}
+            >
+              <OutlineButton onClick={onBack}>Back</OutlineButton>
+
+              {/* ⭐ Save privacy settings before moving to Step4 */}
+              <PrimaryButton
+                onClick={() => {
+                  savePrivacySettings(toggles);
+                  onNext();
+                }}
+              >
+                Next
+              </PrimaryButton>
+            </div>
           </div>
+
+          {/* FOOTNOTE */}
+          <p
+            style={{
+              marginTop: "14px",
+              fontSize: "14px",
+              color: "dark",
+              opacity: 0.7,
+              textAlign: "center",
+            }}
+          >
+            Your privacy is our priority. You can modify these settings anytime in
+            your Privacy Dashboard.
+          </p>
         </div>
 
-        {/* FOOTNOTE */}
-        <p
-          style={{
-            marginTop: "14px",
-            fontSize: "14px",
-            color: "dark",
-            opacity: 0.7,
-            textAlign: "center",
-          }}
-        >
-          Your privacy is our priority. You can modify these settings anytime in
-          your Privacy Dashboard.
-        </p>
-      </div>
+        {/* LOCATION MODAL */}
+        {showLocationModal && (
+          <LocationAccessModal
+            onClose={() => {
+              setShowLocationModal(false);
+              setToggles((prev) => ({ ...prev, location: false }));
+            }}
+            onEnable={() => setShowLocationModal(false)}
+            onManual={() => setShowLocationModal(false)}
+          />
+        )}
 
-      {/* LOCATION MODAL */}
-      {showLocationModal && (
-        <LocationAccessModal
-          onClose={() => {
-            setShowLocationModal(false);
-            setToggles((prev) => ({ ...prev, location: false }));
-          }}
-          onEnable={() => setShowLocationModal(false)}
-          onManual={() => setShowLocationModal(false)}
-        />
-      )}
-
-      {/* EMERGENCY CONTACTS MODAL */}
-      {showEmergencyModal && (
-        <EmergencyContactsModal
-          onClose={() => {
-            setShowEmergencyModal(false);
-            setToggles((prev) => ({ ...prev, emergency: false }));
-          }}
-          onAllowAccess={() => setShowEmergencyModal(false)}
-          onAddTrusted={handleSaveContacts} 
-        />
-      )}
+        {/* EMERGENCY CONTACTS MODAL */}
+        {showEmergencyModal && (
+          <EmergencyContactsModal
+            onClose={() => {
+              setShowEmergencyModal(false);
+              setToggles((prev) => ({ ...prev, emergency: false }));
+            }}
+            onAllowAccess={() => setShowEmergencyModal(false)}
+            onAddTrusted={handleSaveContacts} 
+          />
+        )}
+      </motion.div>
     </div>
   );
 }

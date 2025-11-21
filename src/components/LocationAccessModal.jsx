@@ -80,13 +80,6 @@ export default function LocationAccessModal({ onClose, onEnable, onManual }) {
           >
             Turn on location
           </PrimaryButton>
-
-          <OutlineButton
-            onClick={onManual}
-            style={{ width: "100%", justifyContent: "center", display: "flex" }}
-          >
-            Enter location manually
-          </OutlineButton>
         </div>
       </div>
     </div>

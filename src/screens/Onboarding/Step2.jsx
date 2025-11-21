@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import colors from "../../styles/colors";
 import step2 from "../../assets/images/onboarding/step2.png";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -43,74 +44,87 @@ export default function Step2({ onNext, onBack }) {
         background: `radial-gradient(circle, ${colors.offWhite} 0%, ${colors.purpleLight} 100%)`,
       }}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
           width: "760px",
         }}
       >
-        {/* Illustration */}
-        <div style={{ textAlign: "center" }}>
-          <img
-            src={step2}
-            alt="Step 2"
-            style={{ width: "330px", maxWidth: "100%" }}
-          />
-        </div>
-
-        {/* White Card */}
         <div
           style={{
-            backgroundColor: colors.whiteSoft,
-            padding: "40px",
-            marginTop: "30px",
-            borderRadius: "35px",
-            boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
-            display: "flex",
-            flexDirection: "column",
+            transform: `scale(${scale})`,
+            transformOrigin: "center",
+            width: "760px",
           }}
         >
-          <h2
-            style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: colors.purpleDark,
-              margin: 0,
-            }}
-          >
-            Carefully made for safer journeys.
-          </h2>
+          {/* Illustration */}
+          <div style={{ textAlign: "center" }}>
+            <img
+              src={step2}
+              alt="Step 2"
+              style={{ width: "330px", maxWidth: "100%" }}
+            />
+          </div>
 
-          <p
-            style={{
-              marginTop: "20px",
-              fontSize: "20px",
-              opacity: 0.9,
-              lineHeight: "1.6",
-            }}
-          >
-            Liwa guides you safely using data responsibly, without compromising your
-            privacy.
-            <br />
-            Your trust and safety come first, every time.
-          </p>
-
-          {/* Buttons */}
+          {/* White Card */}
           <div
             style={{
-              marginTop: "15px",
+              backgroundColor: colors.whiteSoft,
+              padding: "40px",
+              marginTop: "30px",
+              borderRadius: "35px",
+              boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
               display: "flex",
-              justifyContent: "flex-end",
-              gap: "12px",
-              width: "100%",
+              flexDirection: "column",
+              alignItems: "center",      
+              textAlign: "center",
             }}
           >
-            <OutlineButton onClick={onBack}>Back</OutlineButton>
-            <PrimaryButton onClick={onNext}>Next</PrimaryButton>
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                margin: 0,
+              }}
+            >
+              Carefully made for safer journeys.
+            </h2>
+
+            <p
+              style={{
+                marginTop: "20px",
+                fontSize: "20px",
+                opacity: 0.9,
+                lineHeight: "1.6",
+              }}
+            >
+              Liwa guides you safely using data responsibly, without compromising your
+              privacy.
+              <br />
+              Your trust and safety come first, every time.
+            </p>
+
+            {/* Buttons */}
+            <div
+              style={{
+                marginTop: "15px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "12px",
+                width: "100%",
+              }}
+            >
+              <OutlineButton onClick={onBack}>Back</OutlineButton>
+              <PrimaryButton onClick={onNext}>Next</PrimaryButton>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ export default function OutlineButton({ children, onClick, style }) {
       onClick={onClick}
       style={{
         backgroundColor: "transparent",
-        padding: "14px 36px",
+        padding: "12px 50px",
         borderRadius: "28px",
         border: `2px solid ${colors.purple}`,
         fontSize: "18px",

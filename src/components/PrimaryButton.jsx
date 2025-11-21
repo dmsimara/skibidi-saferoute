@@ -7,7 +7,7 @@ export default function PrimaryButton({ children, onClick, style }) {
       style={{
         backgroundColor: colors.purple,
         color: "white",
-        padding: "14px 36px",
+        padding: "12px 50px",
         borderRadius: "28px",
         border: "none",
         fontSize: "18px",
