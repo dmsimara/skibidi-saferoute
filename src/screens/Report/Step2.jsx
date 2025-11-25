@@ -2,6 +2,24 @@
 import { useState } from "react";
 import colors from "../../styles/colors";
 import PrimaryButton from "../../components/PrimaryButton";
+import Navbar from "../../components/Navbar";
+import logo from "../../assets/images/splash/logo-text.png";
+import uploadIcon from "../../assets/images/report/upload.png";
+import locationIcon from "../../assets/images/report/location.png";
+import OutlineButton from "../../components/OutlineButton";
+
+<style>
+  {`
+    input::placeholder {
+      color: ${colors.purple};
+      opacity: 0.8;
+    }
+    textarea::placeholder {
+      color: ${colors.purple};
+      opacity: 0.8;
+    }
+  `}
+</style>
 
 export default function Step2({ onNext, onBack }) {
   const [location, setLocation] = useState("");
@@ -13,294 +31,469 @@ export default function Step2({ onNext, onBack }) {
     setMedia([...media, ...files]);
   };
 
+  const removeFile = (index) => {
+    setMedia((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div
       style={{
-        width: "100%",
-        backgroundColor: "#ffffff",
-        borderRadius: "16px",
-        padding: "35px 40px",
-        boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
+        minHeight: "100vh",
+        width: "100vw",
+        overflowX: "hidden",
+        overflowY: "auto",
+        background: `radial-gradient(circle, ${colors.offWhite} 0%, ${colors.purpleLight} 100%)`,
+        display: "flex",
+        justifyContent: "center",
       }}
     >
-      {/* ---------------------- */}
-      {/* PROGRESS STEPS */}
-      {/* ---------------------- */}
+      {/* Purple Main Container */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "40px",
-          marginBottom: "25px",
-          alignItems: "center",
-        }}
-      >
-        {/* Step 1 Complete */}
-        <div
-          style={{
-            width: "40px",
-            height: "3px",
-            backgroundColor: colors.purpleLight,
-            borderRadius: "2px",
-          }}
-        />
-        <div
-          style={{
-            width: "22px",
-            height: "22px",
-            borderRadius: "50%",
-            backgroundColor: colors.purpleDark,
-            color: "white",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: "12px",
-            fontWeight: "600",
-          }}
-        >
-          1
-        </div>
-
-        {/* Step 2 Active */}
-        <div
-          style={{
-            width: "40px",
-            height: "3px",
-            backgroundColor: colors.purpleLight,
-            borderRadius: "2px",
-          }}
-        />
-        <div
-          style={{
-            width: "22px",
-            height: "22px",
-            borderRadius: "50%",
-            backgroundColor: colors.purpleDark,
-            color: "white",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: "12px",
-            fontWeight: "600",
-          }}
-        >
-          2
-        </div>
-
-        {/* Step 3 */}
-        <div
-          style={{
-            width: "40px",
-            height: "3px",
-            backgroundColor: "#ddd",
-            borderRadius: "2px",
-          }}
-        />
-        <div
-          style={{
-            width: "22px",
-            height: "22px",
-            borderRadius: "50%",
-            backgroundColor: "#ddd",
-            color: "#555",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: "12px",
-            fontWeight: "600",
-          }}
-        >
-          3
-        </div>
-      </div>
-
-      {/* Title */}
-      <h2
-        style={{
-          textAlign: "center",
-          fontSize: "22px",
-          color: colors.purpleDark,
-          marginBottom: "30px",
-          fontWeight: "700",
-        }}
-      >
-        Add Details
-      </h2>
-
-      {/* ---------------------- */}
-      {/* LOCATION INPUT */}
-      {/* ---------------------- */}
-      <label
-        style={{
-          fontSize: "14px",
-          color: colors.purpleDark,
-          fontWeight: 700,
-        }}
-      >
-        Location
-      </label>
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: "10px",
-          padding: "10px 12px",
-          border: "2px solid #e5e5e5",
-          marginTop: "6px",
-          marginBottom: "25px",
-        }}
-      >
-        <span style={{ marginRight: "8px", opacity: 0.5 }}>📍</span>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Enter Location Name or Area Name"
-          style={{
-            width: "100%",
-            border: "none",
-            outline: "none",
-            fontSize: "14px",
-            background: "transparent",
-          }}
-        />
-      </div>
-
-      {/* ---------------------- */}
-      {/* ADDITIONAL DETAILS */}
-      {/* ---------------------- */}
-      <label
-        style={{
-          fontSize: "14px",
-          color: colors.purpleDark,
-          fontWeight: 700,
-        }}
-      >
-        Additional Details
-      </label>
-
-      <textarea
-        placeholder="Share any additional information that might help other"
-        value={details}
-        onChange={(e) => setDetails(e.target.value)}
-        style={{
-          width: "100%",
-          minHeight: "120px",
-          resize: "none",
-          borderRadius: "10px",
-          border: "2px solid #e5e5e5",
-          padding: "12px",
-          outline: "none",
-          fontSize: "14px",
-          marginTop: "6px",
-          marginBottom: "25px",
-        }}
-      />
-
-      {/* ---------------------- */}
-      {/* UPLOAD MEDIA */}
-      {/* ---------------------- */}
-      <label
-        style={{
-          fontSize: "14px",
-          color: colors.purpleDark,
-          fontWeight: 700,
-        }}
-      >
-        Upload Media
-      </label>
-
-      <label
-        htmlFor="file-upload"
-        style={{
-          width: "100%",
-          minHeight: "150px",
-          border: "2px dashed #cfcff8",
-          borderRadius: "14px",
-          marginTop: "10px",
+          width: "80%",
+          minHeight: "100%",
+          backgroundColor: colors.purpleMid,
+          borderRadius: "0 0 18px 18px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
-          color: colors.purpleDark,
-          cursor: "pointer",
-          padding: "20px",
-          textAlign: "center",
+          paddingTop: "30px",
+          paddingBottom: "30px",
         }}
       >
+        {/* Logo */}
+        <img
+          src={logo}
+          alt="Liwa"
+          style={{
+            width: 120,
+            marginBottom: "25px",
+          }}
+        />
+
+        {/* Outer White Card */}
         <div
           style={{
-            fontSize: "32px",
-            marginBottom: "8px",
-            color: colors.purple,
+            width: "70%",
+            maxWidth: "800px",
+            backgroundColor: colors.offWhite,
+            borderRadius: "18px",
+            padding: "35px 40px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.10)",
+            marginBottom: "30px",
           }}
         >
-          ➕
+          {/* Title */}
+          <h2
+            style={{
+              fontSize: "26px",
+              margin: 0,
+              color: colors.purpleDark,
+              fontWeight: 700,
+              marginBottom: "5px",
+            }}
+          >
+            Report Incident
+          </h2>
+
+          <p
+            style={{
+              marginTop: "4px",
+              fontSize: "14px",
+              opacity: 0.7,
+              color: colors.purpleDark,
+            }}
+          >
+            Help improve community safety by reporting incidents
+          </p>
+
+          {/* Inner Card */}
+          <div
+            style={{
+              background: "#ffffff",
+              marginTop: "25px",
+              borderRadius: "16px",
+              padding: "35px 40px",
+              boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
+            }}
+          >
+            {/* PROGRESS STEPS */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+                marginBottom: "25px",
+                alignItems: "center",
+              }}
+            >
+              {/* Step 1 Complete */}
+              <div
+                style={{
+                  width: "50px",
+                  height: "4px",
+                  backgroundColor: colors.purpleDark,
+                  borderRadius: "2px",
+                }}
+              />
+              <div
+                style={{
+                  width: "26px",
+                  height: "26px",
+                  borderRadius: "50%",
+                  backgroundColor: colors.purpleDark,
+                  color: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                }}
+              >
+                1
+              </div>
+
+              {/* Step 2 Active */}
+              <div
+                style={{
+                  width: "50px",
+                  height: "4px",
+                  backgroundColor: "#E5E5F0",
+                  borderRadius: "2px",
+                }}
+              />
+              <div
+                style={{
+                  width: "26px",
+                  height: "26px",
+                  borderRadius: "50%",
+                  backgroundColor: "#E5E5F0",
+                  color: "#444",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                }}
+              >
+                2
+              </div>
+
+              {/* Step 3 */}
+              <div
+                style={{
+                  width: "50px",
+                  height: "4px",
+                  backgroundColor: "#E5E5F0",
+                  borderRadius: "2px",
+                }}
+              />
+              <div
+                style={{
+                  width: "26px",
+                  height: "26px",
+                  borderRadius: "50%",
+                  backgroundColor: "#E5E5F0",
+                  color: "#444",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                }}
+              >
+                3
+              </div>
+            </div>
+
+            {/* Title */}
+            <h2
+              style={{
+                textAlign: "center",
+                fontSize: "22px",
+                color: colors.purpleDark,
+                marginBottom: "30px",
+                fontWeight: "700",
+              }}
+            >
+              Add Details
+            </h2>
+
+            {/* LOCATION INPUT */}
+            <label
+              style={{
+                fontSize: "14px",
+                color: colors.purpleDark,
+                fontWeight: 700,
+                marginLeft: "-10px",
+              }}
+            >
+              Location
+            </label>
+
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#ffffff",
+                borderRadius: "10px",
+                padding: "10px 12px",
+                border: "2px solid #e5e5e5",
+                marginTop: "6px",
+                marginBottom: "25px",
+                marginLeft: "-15px",
+              }}
+            >
+              <img
+                src={locationIcon}
+                alt="Location Icon"
+                style={{
+                  width: 18,
+                  height: 18,
+                  marginRight: "8px",
+                  opacity: 0.6,
+                  objectFit: "contain",
+                }}
+              />
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter Location Name or Area Name"
+                style={{
+                  width: "100%",
+                  border: "none",
+                  outline: "none",
+                  fontSize: "14px",
+                  background: "transparent",
+                }}
+              />
+            </div>
+
+            {/* DETAILS INPUT */}
+            <label
+              style={{
+                fontSize: "14px",
+                color: colors.purpleDark,
+                fontWeight: 700,
+                marginLeft: "-10px",
+              }}
+            >
+              Additional Details
+            </label>
+
+            <textarea
+              placeholder="Share any additional information that might help others"
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: "120px",
+                resize: "none",
+                borderRadius: "10px",
+                border: "2px solid #e5e5e5",
+                padding: "12px",
+                outline: "none",
+                fontSize: "14px",
+                marginTop: "6px",
+                marginBottom: "25px",
+                marginLeft: "-15px",
+              }}
+            />
+
+            {/* UPLOAD MEDIA */}
+            <label
+              style={{
+                fontSize: "14px",
+                color: colors.purpleDark,
+                fontWeight: 700,
+                marginLeft: "-10px",
+              }}
+            >
+              Upload Media
+            </label>
+
+            <label
+              htmlFor="file-upload"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const files = Array.from(e.dataTransfer.files || []);
+                setMedia((prev) => [...prev, ...files]);
+              }}
+              style={{
+                width: "97%",
+                minHeight: "150px",
+                border: "2px dashed #cfcff8",
+                borderRadius: "14px",
+                marginTop: "10px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                color: colors.purpleDark,
+                cursor: "pointer",
+                padding: "20px",
+                textAlign: "center",
+                marginLeft: "-15px",
+              }}
+            >
+              <img
+                src={uploadIcon}
+                alt="Upload"
+                style={{
+                  width: 40,
+                  height: 40,
+                  marginBottom: "8px",
+                  objectFit: "contain",
+                }}
+              />
+              <p
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  margin: 0,
+                }}
+              >
+                Add Photo and Video
+              </p>
+              <p
+                style={{
+                  fontSize: "12px",
+                  opacity: 0.6,
+                  marginTop: "3px",
+                }}
+              >
+                Choose a file or drag & drop it here
+              </p>
+            </label>
+
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              accept="image/*,video/*"
+              onChange={handleMediaUpload}
+              style={{ display: "none" }}
+            />
+
+            {media.length > 0 && (
+              <div
+                style={{
+                  marginTop: "15px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                {media.map((file, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      padding: "10px",
+                      borderRadius: "10px",
+                      border: "1px solid #e5e5e5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "12px",
+                    }}
+                  >
+                    {/* Left side: thumbnail + name */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      {/* Thumbnail for images */}
+                      {file.type.startsWith("image/") && (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="preview"
+                          style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: "8px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+
+                      {/* Video icon */}
+                      {file.type.startsWith("video/") && (
+                        <span style={{ fontSize: "32px" }}>🎥</span>
+                      )}
+
+                      {/* File name */}
+                      <p style={{ margin: 0, fontSize: "14px", color: colors.purpleDark }}>
+                        {file.name}
+                      </p>
+                    </div>
+
+                    {/* DELETE BUTTON */}
+                    <button
+                      onClick={() => removeFile(index)}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "18px",
+                        color: colors.purpleDark,
+                        fontWeight: "bold",
+                        padding: "4px 8px",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* BUTTONS */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "12px",
+                marginTop: "25px",
+              }}
+            >
+              <OutlineButton
+                onClick={onBack}
+                style={{
+                  padding: "8px 22px",
+                  fontSize: "14px",
+                }}
+              >
+                Back
+              </OutlineButton>
+
+              <PrimaryButton
+                onClick={() => onNext({ location, details, media })}
+                style={{
+                  padding: "8px 30px",
+                  fontSize: "14px",
+                }}
+              >
+                Next
+              </PrimaryButton>
+            </div>
+          </div>
         </div>
-        <p
-          style={{
-            fontSize: "14px",
-            fontWeight: 600,
-            margin: 0,
-          }}
-        >
-          Add Photo and Video
-        </p>
-        <p
-          style={{
-            fontSize: "12px",
-            opacity: 0.6,
-            marginTop: "3px",
-          }}
-        >
-          Choose a file or drag & drop it here
-        </p>
-      </label>
 
-      <input
-        id="file-upload"
-        type="file"
-        multiple
-        accept="image/*,video/*"
-        onChange={handleMediaUpload}
-        style={{ display: "none" }}
-      />
-
-      {/* ---------------------- */}
-      {/* BUTTONS */}
-      {/* ---------------------- */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "12px",
-          marginTop: "25px",
-        }}
-      >
-        <PrimaryButton
-          onClick={onBack}
+        {/* BOTTOM NAVBAR */}
+        <div
           style={{
-            padding: "8px 22px",
-            fontSize: "14px",
-            backgroundColor: "#e6e6e6",
-            color: colors.purpleDark,
+            width: "85%",
+            marginTop: "auto",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          Back
-        </PrimaryButton>
-
-        <PrimaryButton
-          onClick={() => onNext({ location, details, media })}
-          style={{
-            padding: "8px 30px",
-            fontSize: "14px",
-          }}
-        >
-          Next
-        </PrimaryButton>
+          <Navbar active="Report" />
+        </div>
       </div>
     </div>
   );
