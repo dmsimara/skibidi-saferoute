@@ -25,6 +25,10 @@ export default function Step2({ onNext, onBack }) {
   const [location, setLocation] = useState("");
   const [details, setDetails] = useState("");
   const [media, setMedia] = useState([]);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const orsKey = process.env.REACT_APP_ORS_KEY;
 
   const handleMediaUpload = (e) => {
     const files = Array.from(e.target.files || []);
@@ -34,6 +38,29 @@ export default function Step2({ onNext, onBack }) {
   const removeFile = (index) => {
     setMedia((prev) => prev.filter((_, i) => i !== index));
   };
+
+  async function fetchSuggestions(query) {
+    if (!query) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const url = `https://api.openrouteservice.org/geocode/autocomplete?api_key=${orsKey}&text=${encodeURIComponent(
+        query
+      )}&size=5`;
+
+      const resp = await fetch(url);
+      const data = await resp.json();
+
+      if (data?.features) {
+        setSuggestions(data.features);
+      }
+    } catch (err) {
+      console.error("Location autocomplete error:", err);
+    }
+  }
+
 
   return (
     <div
@@ -259,7 +286,10 @@ export default function Step2({ onNext, onBack }) {
               <input
                 type="text"
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  fetchSuggestions(e.target.value);
+                }}
                 placeholder="Enter Location Name or Area Name"
                 style={{
                   width: "100%",
@@ -270,6 +300,120 @@ export default function Step2({ onNext, onBack }) {
                 }}
               />
             </div>
+
+            {/* Suggestions Dropdown */}
+            {suggestions.length > 0 && (
+              <div
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  marginTop: "5px",
+                  marginBottom: "15px",
+                  position: "relative",
+                  zIndex: 50,
+                  marginLeft: "-15px",
+                  padding: "5px 0",
+                }}
+              >
+                {suggestions.map((s, i) => (
+                  <div
+                    key={i}
+                    onClick={() => {
+                      const lat = s.geometry.coordinates[1];
+                      const lng = s.geometry.coordinates[0];
+
+                      // Fill fields automatically
+                      setLocation(s.properties.label);
+                      setLatitude(lat);
+                      setLongitude(lng);
+                      setSuggestions([]);
+
+                      console.log("📌 Selected location:", {
+                        name: s.properties.label,
+                        lat,
+                        lng,
+                      });
+                    }}
+                    style={{
+                      padding: "12px 15px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: colors.purpleDark,
+                      borderBottom: "1px solid rgba(0,0,0,0.08)",
+                    }}
+                  >
+                    {s.properties.label}
+                  </div>
+                ))}
+              </div>
+            )}
+
+
+            {/* LATITUDE */}
+            <label
+              style={{
+                fontSize: "14px",
+                color: colors.purpleDark,
+                fontWeight: 700,
+                marginLeft: "-10px",
+                marginTop: "10px",
+              }}
+            >
+              Latitude
+            </label>
+
+            <input
+              type="number"
+              step="any"
+              value={latitude}
+              onChange={(e) => setLatitude(e.target.value)}
+              placeholder="Latitude"
+              style={{
+                width: "97%",
+                border: "2px solid #e5e5e5",
+                borderRadius: "10px",
+                padding: "10px 12px",
+                fontSize: "14px",
+                outline: "none",
+                marginTop: "6px",
+                marginBottom: "20px",
+                marginLeft: "-15px",
+              }}
+            />
+
+            {/* LONGITUDE */}
+            <label
+              style={{
+                fontSize: "14px",
+                color: colors.purpleDark,
+                fontWeight: 700,
+                marginLeft: "-10px",
+              }}
+            >
+              Longitude
+            </label>
+
+            <input
+              type="number"
+              step="any"
+              value={longitude}
+              onChange={(e) => setLongitude(e.target.value)}
+              placeholder="Longitude"
+              style={{
+                width: "97%",
+                border: "2px solid #e5e5e5",
+                borderRadius: "10px",
+                padding: "10px 12px",
+                fontSize: "14px",
+                outline: "none",
+                marginTop: "6px",
+                marginBottom: "25px",
+                marginLeft: "-15px",
+              }}
+            />
+
 
             {/* DETAILS INPUT */}
             <label
@@ -471,7 +615,15 @@ export default function Step2({ onNext, onBack }) {
               </OutlineButton>
 
               <PrimaryButton
-                onClick={() => onNext({ location, details, media })}
+                onClick={() =>
+                  onNext({
+                    location,
+                    latitude: latitude ? parseFloat(latitude) : null,
+                    longitude: longitude ? parseFloat(longitude) : null,
+                    details,
+                    media,
+                  })
+                }
                 style={{
                   padding: "8px 30px",
                   fontSize: "14px",

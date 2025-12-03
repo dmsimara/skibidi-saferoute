@@ -6,7 +6,7 @@ import OutlineButton from "../../components/OutlineButton";
 import logo from "../../assets/images/splash/logo-text.png";
 import checkIcon from "../../assets/images/report/check.png";
 
-export default function Step4({ onNewReport, onViewReports }) {
+export default function Step4({ trackingId, onNewReport, onViewReports }) {
   return (
     <div
       style={{
@@ -217,7 +217,8 @@ export default function Step4({ onNewReport, onViewReports }) {
                 color: colors.purpleDark,
               }}
             >
-              <strong>Tracking ID:</strong> <u>#SR288894</u>
+              <strong>Tracking ID:</strong>{" "}
+              <u>#{trackingId}</u>
             </p>
 
             {/* Buttons */}

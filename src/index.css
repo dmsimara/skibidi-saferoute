@@ -19,3 +19,7 @@ code {
 html, body {
   overflow-x: hidden !important;
 }
+
+.maplibregl-map {
+  contain: layout size;
+}

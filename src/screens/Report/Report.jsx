@@ -5,6 +5,7 @@ import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Step4 from "./Step4";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 export default function Report() {
   const navigate = useNavigate();
@@ -16,26 +17,94 @@ export default function Report() {
     concern: "",
     otherConcern: "",
     location: "",
+    latitude: null,
+    longitude: null,
     details: "",
     media: [],
   });
 
-  // Go to the next step & merge new data
+  // STEP CHANGERS
   const goNext = (data = {}) => {
     setReportData((prev) => ({ ...prev, ...data }));
     setStep((prev) => prev + 1);
   };
 
-  // Go back to previous step
   const goBack = () => {
     setStep((prev) => prev - 1);
   };
 
-  // When user clicks "Submit Report" in Step3
-  const handleSubmit = () => {
-    console.log("FINAL REPORT:", reportData);
+  // ---------------------------------------------------------
+  // 🚀 MAIN REPORT SUBMISSION FUNCTION (Supabase)
+  // ---------------------------------------------------------
+  const handleSubmit = async () => {
+    console.log("Submitting report...");
 
-    // After storing data... navigate to Step4
+    // ------------------------------
+    // 1. Upload media to Supabase Storage
+    // ------------------------------
+    let mediaUrls = [];
+
+    for (const file of reportData.media) {
+      const filePath = `reports/${Date.now()}-${file.name}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("report-media")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error("Upload failed:", uploadError);
+        continue;
+      }
+
+      // Get public URL
+      const publicUrl = supabase.storage
+        .from("report-media")
+        .getPublicUrl(filePath).data.publicUrl;
+
+      mediaUrls.push(publicUrl);
+    }
+
+    // ------------------------------
+    // 2. Guest Identifier (Device ID)
+    // ------------------------------
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem("deviceId", deviceId);
+    }
+
+    // ------------------------------
+    // 3. Insert Report into Supabase
+    // ------------------------------
+    const { data, error } = await supabase
+      .from("reports")
+      .insert({
+        concern: reportData.concern,
+        other_concern: reportData.otherConcern,
+        location_name: reportData.location,
+        latitude: reportData.latitude,
+        longitude: reportData.longitude,
+        details: reportData.details,
+        media_urls: mediaUrls,
+        is_anonymous: true,
+        device_id: deviceId,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Report insert failed:", error);
+      alert("Failed to submit report. Please try again.");
+      return;
+    }
+
+    console.log("Report saved:", data);
+
+    // ------------------------------
+    // 4. Move to Step 4 (Success Page)
+    // ------------------------------
+    setReportData((prev) => ({ ...prev, tracking_id: data.tracking_id }));
+
     setStep(4);
   };
 
@@ -69,6 +138,7 @@ export default function Report() {
       )}
       {step === 4 && (
         <Step4
+          trackingId={reportData.tracking_id}
           onNewReport={startNewReport}
           onViewReports={viewReports}
         />

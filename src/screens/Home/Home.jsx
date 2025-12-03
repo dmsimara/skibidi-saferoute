@@ -1,194 +1,246 @@
+// src/screens/Home/Home.jsx
+import { useState, useEffect } from "react";
 import colors from "../../styles/colors";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
+import MapView from "../../components/MapView";
+import RecommendedRoutes from "../../components/RecommendedRoutes";
+import RouteOverview from "../../components/RouteOverview";
+import NavigationMode from "../../components/NavigationMode";
+
+// Dummy PH places
+const PLACES = [
+  { id: "moa", name: "SM Mall of Asia", city: "Pasay, Metro Manila", lat: 14.5353, lng: 120.9822 },
+  { id: "bgc", name: "BGC High Street", city: "Taguig, Metro Manila", lat: 14.5526, lng: 121.0443 },
+  { id: "intramuros", name: "Intramuros", city: "Manila", lat: 14.5896, lng: 120.9747 },
+  { id: "upd", name: "UP Diliman", city: "Quezon City, Metro Manila", lat: 14.6549, lng: 121.0647 },
+];
 
 export default function Home() {
+  const [userLocation, setUserLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [showRoutes, setShowRoutes] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+
+  const [showOverview, setShowOverview] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(false);
+
+  // User location setup
+  useEffect(() => {
+    const fallback = { lat: 14.5995, lng: 120.9842 };
+
+    try {
+      const stored = localStorage.getItem("liwa_privacy");
+      const parsed = stored ? JSON.parse(stored) : {};
+
+      if (parsed.location === true && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) =>
+            setUserLocation({
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            }),
+          () => setUserLocation(fallback)
+        );
+      } else {
+        setUserLocation(fallback);
+      }
+    } catch {
+      setUserLocation(fallback);
+    }
+  }, []);
+
+  // Search logic
+  const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  function handleSearchChange(value) {
+    setSearch(value);
+    if (!value.trim()) return setSuggestions([]);
+
+    const lower = value.toLowerCase();
+    setSuggestions(
+      PLACES.filter(
+        (p) =>
+          p.name.toLowerCase().includes(lower) ||
+          p.city.toLowerCase().includes(lower)
+      )
+    );
+  }
+
+  function handleSelectPlace(place) {
+    setSelectedLocation(place);
+    setSearch(`${place.name}, ${place.city}`);
+    setSuggestions([]);
+    setShowRoutes(true);
+  }
+
+  if (!userLocation) return <div style={{ padding: 40 }}>Loading map…</div>;
+
+  // Search bar UI
+  function renderSearchBar() {
+    return (
+      <div style={{ width: "100%", position: "relative" }}>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder="🔍  Search for a Destination in the Philippines"
+          style={{
+            width: "100%",
+            height: 45,
+            borderRadius: 12,
+            border: "none",
+            outline: "none",
+            padding: "0 15px",
+            fontSize: 15,
+            backgroundColor: colors.offWhite,
+            boxShadow: "0px 3px 10px rgba(0,0,0,0.10)",
+          }}
+        />
+
+        {suggestions.length > 0 && (
+          <div
+            style={{
+              width: "100%",
+              position: "absolute",
+              top: 50,
+              backgroundColor: "white",
+              borderRadius: 10,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              zIndex: 50,
+            }}
+          >
+            {suggestions.map((place) => (
+              <div
+                key={place.id}
+                onClick={() => handleSelectPlace(place)}
+                style={{
+                  padding: "12px 15px",
+                  cursor: "pointer",
+                  borderBottom: "1px solid rgba(0,0,0,0.08)",
+                }}
+              >
+                <div style={{ fontWeight: 600 }}>{place.name}</div>
+                <div style={{ fontSize: 12, opacity: 0.7 }}>{place.city}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         width: "100vw",
-        overflowY: "auto", // <— SCREEN scrolls, NOT purple container
+        overflowY: "auto",
         background: `radial-gradient(circle, ${colors.offWhite} 0%, ${colors.purpleLight} 100%)`,
         display: "flex",
         justifyContent: "center",
       }}
     >
-      {/* PURPLE MID CONTAINER */}
+      {/* Main purple container */}
       <div
         style={{
           width: "80%",
-          minHeight: "100%",
+          minHeight: "100vh",
           backgroundColor: colors.purpleMid,
           borderRadius: "0 0 18px 18px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          position: "relative",
-          paddingBottom: "150px", // space so content does NOT go under navbar
+          paddingTop: 30,
+          paddingBottom: 30,
+          justifyContent: "space-between",
         }}
       >
-        {/* LOGO */}
-        <img
-          src={logo}
-          alt="Liwa"
-          style={{
-            width: 120,
-            marginTop: "30px",
-            marginBottom: "25px",
-          }}
-        />
-
-        {/* SHARED CONTENT WRAPPER (ALL MUST MATCH IN WIDTH) */}
+        {/* CONTENT AREA */}
         <div
           style={{
-            width: "85%",    // <— THE TRUE WIDTH for both cards
+            width: "85%",
             display: "flex",
             flexDirection: "column",
-            gap: "25px",
+            alignItems: "center",
+            gap: 25,
+            maxWidth: 900,
+            margin: "0 auto",
           }}
         >
-          {/* SEARCH BAR */}
-          <input
-            type="text"
-            placeholder="🔍  Search for a Destination"
-            style={{
-              width: "100%",
-              height: "45px",
-              borderRadius: "12px",
-              border: "none",
-              outline: "none",
-              padding: "0 15px",
-              fontSize: "15px",
-              backgroundColor: colors.offWhite,
-              boxShadow: "0px 3px 10px rgba(0,0,0,0.10)",
-            }}
-          />
+          <img src={logo} alt="Liwa" style={{ width: 120 }} />
 
-          {/* MAP PREVIEW CARD */}
+          {/* Search */}
+          <div style={{ width: "100%", maxWidth: 800 }}>{renderSearchBar()}</div>
+
+          {/* Map */}
           <div
             style={{
               width: "100%",
-              minHeight: "260px",
-              backgroundColor: colors.offWhite,
-              borderRadius: "18px",
-              padding: "30px 0",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              boxShadow: "0px 4px 14px rgba(0,0,0,0.12)",
+              maxWidth: 900,
+              height: 430,
+              borderRadius: 18,
+              overflow: "hidden",
+              margin: "0 auto",
             }}
           >
-            <div
-              style={{
-                fontSize: "60px",
-                color: colors.purpleDark,
-                opacity: 0.85,
-                marginBottom: "12px",
-              }}
-            >
-              🗺️
-            </div>
-
-            <p
-              style={{
-                fontSize: "18px",
-                color: colors.purpleDark,
-                fontWeight: 600,
-                opacity: 0.9,
-              }}
-            >
-              Map Preview with Overlay
-            </p>
+            <MapView
+              latitude={selectedLocation?.lat || userLocation.lat}
+              longitude={selectedLocation?.lng || userLocation.lng}
+              userLocation={userLocation}
+              routeGeometry={null}
+            />
           </div>
 
-          {/* SUGGESTED ROUTES CARD — SAME EXACT WIDTH */}
-          <div
-            style={{
-              width: "100%",
-              backgroundColor: colors.offWhite,
-              borderRadius: "18px",
-              padding: "25px",
-              boxShadow: "0px 4px 14px rgba(0,0,0,0.12)",
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                color: colors.purpleDark,
-                fontSize: "20px",
-                fontWeight: 700,
+          {/* Recommended Routes */}
+          {showRoutes && !selectedRoute && !showOverview && !showNavigation && (
+            <RecommendedRoutes
+              place={selectedLocation}
+              onSelectRoute={(route) => {
+                setSelectedRoute(route);
+                setShowOverview(true);
               }}
-            >
-              Suggested Routes
-            </h3>
+              onBack={() => setShowRoutes(false)}
+            />
+          )}
 
-            {/* ROUTE BOX */}
-            <div
-              style={{
-                marginTop: "20px",
-                backgroundColor: "white",
-                borderRadius: "12px",
-                padding: "20px",
-                boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+          {/* Route Overview */}
+          {showOverview && selectedRoute && !showNavigation && (
+            <RouteOverview
+              place={selectedLocation}
+              route={selectedRoute}
+              onBack={() => {
+                setShowOverview(false);
+                setSelectedRoute(null);
               }}
-            >
-              <p style={{ fontSize: "13px", opacity: 0.7, margin: 0 }}>
-                Current Location
-              </p>
+              onStartNavigation={() => setShowNavigation(true)}
+            />
+          )}
 
-              <p
-                style={{
-                  fontSize: "18px",
-                  fontWeight: 700,
-                  marginTop: "5px",
-                  marginBottom: "10px",
-                }}
-              >
-                Mall of Asia
-              </p>
+          {/* Navigation Mode */}
+          {showNavigation && (
+            <NavigationMode
+              place={selectedLocation}
+              route={selectedRoute}
+              onBack={() => setShowNavigation(false)}
+              onStart={() => setShowLiveNav(true)}
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: "10px",
-                }}
-              >
-                <p style={{ fontSize: "12px", opacity: 0.7 }}>
-                  • Good Lighting &nbsp; • Moderate Crowd
-                </p>
-
-                <button
-                  style={{
-                    padding: "6px 14px",
-                    borderRadius: "20px",
-                    border: `2px solid ${colors.purpleDark}`,
-                    background: "white",
-                    cursor: "pointer",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  View Route
-                </button>
-              </div>
-            </div>
-          </div>
+            />
+          )}
         </div>
 
         {/* NAVBAR */}
         <div
           style={{
             width: "85%",
-            marginTop: "auto",
-            display: "flex",
-            justifyContent: "center",
+            maxWidth: 900,
+            margin: "0 auto",
+            transform: "translateX(35px)",
           }}
         >
-          <Navbar />
+          <Navbar active="Home" />
         </div>
       </div>
     </div>
