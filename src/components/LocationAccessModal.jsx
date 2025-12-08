@@ -2,7 +2,7 @@ import colors from "../styles/colors";
 import PrimaryButton from "./PrimaryButton";
 import OutlineButton from "./OutlineButton";
 
-export default function LocationAccessModal({ onClose, onEnable, onManual }) {
+export default function LocationAccessModal({ onClose, onEnable }) {
   return (
     <div
       style={{
@@ -69,17 +69,39 @@ export default function LocationAccessModal({ onClose, onEnable, onManual }) {
             fontSize: "15px",
           }}
         >
-          Allow location access?
+          Your location lets Liwa match you with safer route options and nearby
+          community updates. Your data stays private and won’t be shared without
+          your permission.
         </p>
 
         {/* BUTTONS */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            marginTop: "12px",
+          }}
+        >
+          {/* Enable Location */}
           <PrimaryButton
             onClick={onEnable}
             style={{ width: "100%", justifyContent: "center", display: "flex" }}
           >
             Turn on location
           </PrimaryButton>
+
+          {/* Maybe Later → closes modal */}
+          <OutlineButton
+            onClick={onClose}
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              display: "flex",
+            }}
+          >
+            Maybe Later
+          </OutlineButton>
         </div>
       </div>
     </div>

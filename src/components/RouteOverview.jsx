@@ -7,9 +7,12 @@ import { useNavigate } from "react-router-dom";
 import ViewReviewConfirmModal from "./ViewReviewConfirmModal";
 import ReportDetailsModal from "./ReportDetailsModal";
 import HeartButton from "./HeartButton";
+import flagIcon from "../assets/images/home/flag.webp";
 import HeartConfirmModal from "./HeartConfirmModal";
+import FlagRouteModal from "./FlagRouteModal";  
 
 export default function RouteOverview({ route, place, onBack, onStartNavigation }) {
+    const [showFlagModal, setShowFlagModal] = useState(false);
     // ------------------------------------------------------------
     // HOOKS — always top
     // ------------------------------------------------------------
@@ -185,10 +188,18 @@ export default function RouteOverview({ route, place, onBack, onStartNavigation 
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <h2 style={{ fontSize: 22, fontWeight: 700, color: colors.purpleDark }}>
+                        {/* Title */}
+                        <h2
+                            style={{
+                                fontSize: 22,
+                                fontWeight: 700,
+                                color: colors.purpleDark,
+                            }}
+                        >
                             Route Overview
                         </h2>
 
+                        {/* Safety pill */}
                         <span
                             style={{
                                 display: "flex",
@@ -213,6 +224,24 @@ export default function RouteOverview({ route, place, onBack, onStartNavigation 
                             />
                             {route.safety}
                         </span>
+
+                        {/* Flag Button */}
+                        <button
+                            onClick={() => setShowFlagModal(true)}
+                            style={{
+                                width: 45,
+                                height: 45,
+                                borderRadius: 12,
+                                border: "2px solid transparent",
+                                background: "white",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <img src={flagIcon} alt="flag" style={{ width: 22 }} />
+                        </button>
                     </div>
 
                     <button

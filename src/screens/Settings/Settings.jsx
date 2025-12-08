@@ -1,14 +1,32 @@
 import colors from "../../styles/colors";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
+import { useState } from "react";
+import { title } from "framer-motion/client";
 
 export default function Settings() {
+  // Toggle states for each permission
+  const [toggles, setToggles] = useState({
+    location: true,
+    dataSharing: true,
+    anonymous: true,
+    notifications: true,
+    emergencyContact: true,
+    cameraMedia: true,
+    hideSensitive: true,
+  });
+
+  function toggleSwitch(key) {
+    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         width: "100vw",
-        overflowY: "auto",  
+        overflowX: "hidden",
+        overflowY: "auto",
         background: `radial-gradient(circle, ${colors.offWhite} 0%, ${colors.purpleLight} 100%)`,
         display: "flex",
         justifyContent: "center",
@@ -17,14 +35,14 @@ export default function Settings() {
       <div
         style={{
           width: "80%",
-          minHeight: "100%",
+          minHeight: "100vh",
           backgroundColor: colors.purpleMid,
           borderRadius: "0 0 18px 18px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          position: "relative",
-          paddingBottom: "150px",  
+          paddingTop: "30px",
+          paddingBottom: "30px",
         }}
       >
         {/* Logo */}
@@ -38,26 +56,521 @@ export default function Settings() {
           }}
         />
 
-        <h2 style={{ color: colors.offWhite, marginTop: 20 }}>
-          Report an Incident
-        </h2>
-
-        {/* CONTENT will be added soon */}
-        <p style={{ color: "white", opacity: 0.8 }}>
-          (Building the report UI next…)
-        </p>
-
-        {/* Persistent Navbar */}
+        {/* MAIN SETTINGS CARD */}
         <div
           style={{
-            position: "fixed",
-            bottom: "25px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "80%", // same as purple mid container
+            width: "75%",
+            maxWidth: "900px",
+            backgroundColor: colors.offWhite,
+            borderRadius: "18px",
+            padding: "40px 45px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.10)",
+            marginBottom: "40px",
+          }}
+        >
+          {/* Title */}
+          <h2
+            style={{
+              fontSize: "28px",
+              margin: 0,
+              color: colors.purpleDark,
+              fontWeight: 700,
+              marginBottom: "6px",
+            }}
+          >
+            Settings
+          </h2>
+
+          {/* Subtitle */}
+          <p
+            style={{
+              marginTop: "4px",
+              fontSize: "14px",
+              opacity: 0.7,
+              color: colors.purpleDark,
+              marginBottom: "25px",
+            }}
+          >
+            Manage your preferences and privacy
+          </p>
+
+          {/* ACCOUNT CARD */}
+          <div
+            style={{
+              background: "white",
+              padding: "25px 30px",
+              borderRadius: "14px",
+              boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+              marginBottom: "35px",
+              border: `1px solid #E8E8FF`,
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "18px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                marginBottom: "15px",
+              }}
+            >
+              Account
+            </h3>
+
+            {/* Row: Guest User */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <span style={{ fontSize: "28px", opacity: 0.8 }}>👤</span>
+
+                <div>
+                  <h4
+                    style={{
+                      margin: 0,
+                      fontSize: "16px",
+                      fontWeight: 700,
+                      color: colors.purpleDark,
+                    }}
+                  >
+                    Guest User
+                  </h4>
+
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "12px",
+                      opacity: 0.6,
+                      color: colors.purpleDark,
+                    }}
+                  >
+                    Using app anonymously
+                  </p>
+                </div>
+              </div>
+
+              <span
+                style={{
+                  background: "#DFFFE5",
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#1A9A30",
+                }}
+              >
+                Guest User
+              </span>
+            </div>
+
+            {/* Sign In Button */}
+            <button
+              style={{
+                width: "100%",
+                padding: "12px 0",
+                borderRadius: "20px",
+                border: `2px solid ${colors.purple}`,
+                background: "white",
+                color: colors.purple,
+                fontWeight: 700,
+                fontSize: "15px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
+            >
+              Sign In for Advance Feature
+            </button>
+          </div>
+
+          {/* PERMISSIONS SECTION */}
+          <h3
+            style={{
+              fontSize: "20px",
+              margin: "0 0 18px 0",
+              fontWeight: 700,
+              color: colors.purpleDark,
+            }}
+          >
+            Permissions & Consent
+          </h3>
+
+          {[
+            {
+              key: "location",
+              title: "Location Access",
+              desc: "Used to suggest safe routes in real time",
+            },
+            {
+              key: "dataSharing",
+              title: "Data Sharing",
+              desc: "Decide what information the app can collect",
+            },
+            {
+              key: "anonymous",
+              title: "Anonymous Reporting",
+              desc: "Report safety concerns without revealing your identity",
+            },
+            {
+              key: "notifications",
+              title: "Notification and Alerts",
+              desc: "Get updates about hazards and road changes",
+            },
+            {
+              key: "emergencyContact",
+              title: "Emergency Contact",
+              desc: "Let trusted people be alerted in case of emergency",
+            },
+            {
+              key: "cameraMedia",
+              title: "Camera & Media",
+              desc: "Upload photos for incident reports",
+            },
+            {
+              key: "hideSensitive",
+              title: "Hide Sensitive Media and Information",
+              desc: "Masks sensitive fields (e.g., phone, email, exact address, and faces in photos) in shares, reports, and public views.",
+            },
+          ].map((item) => (
+            <div
+              key={item.key}
+              style={{
+                background: "white",
+                padding: "18px 22px",
+                borderRadius: "12px",
+                boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+                marginBottom: "14px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <h4
+                  style={{
+                    margin: 0,
+                    fontSize: "15px",
+                    fontWeight: 700,
+                    color: colors.purpleDark,
+                  }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "12px",
+                    opacity: 0.6,
+                    color: colors.purpleDark,
+                  }}
+                >
+                  {item.desc}
+                </p>
+              </div>
+
+              {/* Toggle Switch */}
+              <div
+                onClick={() => toggleSwitch(item.key)}
+                style={{
+                  width: "50px",
+                  height: "26px",
+                  borderRadius: "20px",
+                  background: toggles[item.key] ? colors.purple : "#ccc",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "3px",
+                  cursor: "pointer",
+                  transition: "0.2s ease",
+                }}
+              >
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    background: "white",
+                    transform: toggles[item.key]
+                      ? "translateX(24px)"
+                      : "translateX(0px)",
+                    transition: "0.2s ease",
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+
+          {/* CONSENT HISTORY */}
+          <h3
+            style={{
+              fontSize: "20px",
+              margin: "30px 0 12px 0",
+              fontWeight: 700,
+              color: colors.purpleDark,
+            }}
+          >
+            Consent History
+          </h3>
+
+          <div style={{ textAlign: "right", marginBottom: "10px" }}>
+            <span
+              style={{
+                fontSize: "13px",
+                color: colors.purple,
+                fontWeight: 600,
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Revoke All Access
+            </span>
+          </div>
+
+          {/* Consent Items */}
+          {[
+            { title: "Location access", date: "November 18, 2025", status: "granted" },
+            { title: "Camera access", date: "November 18, 2025", status: "revoked" },
+            { title: "Notifications", date: "Oct 22, 2025", status: "granted" },
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                background: "white",
+                padding: "18px 22px",
+                borderRadius: "12px",
+                boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+                marginBottom: "14px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <h4
+                  style={{
+                    margin: 0,
+                    fontSize: "15px",
+                    fontWeight: 700,
+                    color: colors.purpleDark,
+                  }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "12px",
+                    opacity: 0.6,
+                    color: colors.purpleDark,
+                  }}
+                >
+                  {item.date}
+                </p>
+              </div>
+
+              {/* STATUS PILL */}
+              <span
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  background:
+                    item.status === "granted" ? "#E3FFE9" : "#FFE5E5",
+                  color:
+                    item.status === "granted" ? "#16A542" : "#D63333",
+                }}
+              >
+                {item.status === "granted" ? "Granted" : "Revoked"}
+              </span>
+            </div>
+          ))}
+
+          {/* APP SETTINGS */}
+          <h3
+            style={{
+              fontSize: "20px",
+              margin: "32px 0 16px 0",
+              fontWeight: 700,
+              color: colors.purpleDark,
+            }}
+          >
+            App Settings
+          </h3>
+
+          {[
+            {
+              icon: "🌐",
+              title: "Language",
+              subtitle: "English",
+              toggle: "language",
+            },
+            {
+              icon: "♿",
+              title: "Accessibility",
+              subtitle: "WCAG AA Compliant",
+              toggle: "accessibility",
+            },
+            {
+              icon: "📄",
+              title: "Terms & Conditions",
+              subtitle: "Read more about our Terms & Conditions here.",
+              toggle: null,
+            },
+            {
+              icon: "🔒",
+              title: "Privacy Policy",
+              subtitle: "Read more about Privacy Policies here.",
+              toggle: null,
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                background: "white",
+                padding: "18px 22px",
+                borderRadius: "12px",
+                boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+                marginBottom: "14px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <span style={{ fontSize: "22px", opacity: 0.8 }}>{item.icon}</span>
+
+                <div>
+                  <h4
+                    style={{
+                      margin: 0,
+                      fontSize: "15px",
+                      fontWeight: 700,
+                      color: colors.purpleDark,
+                    }}
+                  >
+                    {item.title}
+                  </h4>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "12px",
+                      opacity: 0.6,
+                      color: colors.purpleDark,
+                    }}
+                  >
+                    {item.subtitle}
+                  </p>
+                </div>
+              </div>
+
+              {/* Toggle only for first 2 */}
+              {item.toggle ? (
+                <div
+                  onClick={() =>
+                    setToggles((prev) => ({
+                      ...prev,
+                      [item.toggle]: !prev[item.toggle],
+                    }))
+                  }
+                  style={{
+                    width: "50px",
+                    height: "26px",
+                    borderRadius: "20px",
+                    background: toggles[item.toggle] ? colors.purple : "#ccc",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "3px",
+                    cursor: "pointer",
+                    transition: "0.2s ease",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      background: "white",
+                      transform: toggles[item.toggle]
+                        ? "translateX(24px)"
+                        : "translateX(0px)",
+                      transition: "0.2s ease",
+                    }}
+                  />
+                </div>
+              ) : (
+                <span style={{ width: "30px" }}></span>
+              )}
+            </div>
+          ))}
+
+          {/* PRIVACY NOTICE BOX */}
+          <div
+            style={{
+              border: `2px solid ${colors.purple}`,
+              borderRadius: "14px",
+              padding: "22px 26px",
+              marginTop: "30px",
+              marginBottom: "25px",
+              textAlign: "center",
+            }}
+          >
+            <h4
+              style={{
+                margin: 0,
+                fontSize: "15px",
+                fontWeight: 700,
+                color: colors.purpleDark,
+                marginBottom: "6px",
+              }}
+            >
+              Your Privacy Matters
+            </h4>
+
+            <p
+              style={{
+                margin: 0,
+                fontSize: "13px",
+                opacity: 0.7,
+                color: colors.purpleDark,
+                lineHeight: "20px",
+              }}
+            >
+              You can revoke any permission at any time. Some features may be limited
+              when permissions are disabled.
+            </p>
+          </div>
+
+          {/* SIGN OUT BUTTON */}
+          <button
+            style={{
+              padding: "12px 40px",
+              borderRadius: "20px",
+              border: `2px solid ${colors.purple}`,
+              background: "white",
+              color: colors.purpleDark,
+              fontWeight: 700,
+              fontSize: "15px",
+              cursor: "pointer",
+              display: "block",
+              margin: "0 auto",
+              marginTop: "10px",
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
+
+        {/* Navbar */}
+        <div
+          style={{
+            width: "85%",
+            marginTop: "auto",
             display: "flex",
             justifyContent: "center",
-            zIndex: 9999
           }}
         >
           <Navbar />

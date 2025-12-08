@@ -7,6 +7,7 @@ import MapView from "../../components/MapView";
 import RecommendedRoutes from "../../components/RecommendedRoutes";
 import RouteOverview from "../../components/RouteOverview";
 import NavigationMode from "../../components/NavigationMode";
+import LiveNavigation from "../../components/LiveNavigation"; // ✅ NEW IMPORT
 
 // Dummy PH places
 const PLACES = [
@@ -25,6 +26,8 @@ export default function Home() {
 
   const [showOverview, setShowOverview] = useState(false);
   const [showNavigation, setShowNavigation] = useState(false);
+
+  const [showLiveNav, setShowLiveNav] = useState(false); // ✅ NEW STATE
 
   // User location setup
   useEffect(() => {
@@ -175,7 +178,7 @@ export default function Home() {
           {/* Search */}
           <div style={{ width: "100%", maxWidth: 800 }}>{renderSearchBar()}</div>
 
-          {/* Map */}
+          {/* Map (ALWAYS VISIBLE) */}
           <div
             style={{
               width: "100%",
@@ -195,7 +198,7 @@ export default function Home() {
           </div>
 
           {/* Recommended Routes */}
-          {showRoutes && !selectedRoute && !showOverview && !showNavigation && (
+          {showRoutes && !selectedRoute && !showOverview && !showNavigation && !showLiveNav && (
             <RecommendedRoutes
               place={selectedLocation}
               onSelectRoute={(route) => {
@@ -207,7 +210,7 @@ export default function Home() {
           )}
 
           {/* Route Overview */}
-          {showOverview && selectedRoute && !showNavigation && (
+          {showOverview && selectedRoute && !showNavigation && !showLiveNav && (
             <RouteOverview
               place={selectedLocation}
               route={selectedRoute}
@@ -219,14 +222,25 @@ export default function Home() {
             />
           )}
 
-          {/* Navigation Mode */}
-          {showNavigation && (
+          {/* Navigation Mode (step list) */}
+          {showNavigation && !showLiveNav && (
             <NavigationMode
               place={selectedLocation}
               route={selectedRoute}
               onBack={() => setShowNavigation(false)}
-              onStart={() => setShowLiveNav(true)}
+              onStart={() => setShowLiveNav(true)}  
+            />
+          )}
 
+          {/* Live Navigation */}
+          {showLiveNav && (
+            <LiveNavigation
+              place={selectedLocation}
+              route={selectedRoute}
+              onExit={() => {
+                setShowLiveNav(false);
+                setShowNavigation(false);
+              }}
             />
           )}
         </div>

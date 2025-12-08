@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import colors from "../styles/colors";
 import PrimaryButton from "./PrimaryButton";
-import ArrivalModal from "./modals/ArrivalModal";
+import ArrivalModal from "./ArrivalModal";
 
 export default function LiveNavigation({ place, route, onExit }) {
   const [showArrival, setShowArrival] = useState(false);

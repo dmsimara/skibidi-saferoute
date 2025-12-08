@@ -1,8 +1,104 @@
+import { useEffect, useRef, useState } from "react";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 import colors from "../../styles/colors";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
+import { supabase } from "../../supabaseClient";
 
 export default function Community() {
+  const [reports, setReports] = useState([]);
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [sortOption, setSortOption] = useState("date");
+
+  useEffect(() => {
+    async function fetchReports() {
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (!error && data) {
+        setReports(data);
+
+        // Compute dynamic counts
+        const safe = data.filter(r => r.severity === "Safe").length;
+        const moderate = data.filter(r => r.severity === "Moderate").length;
+        const danger = data.filter(r => r.severity === "Danger").length;
+
+        setStats({ safe, moderate, danger });
+      }
+    }
+
+    fetchReports();
+  }, []);
+
+  const [stats, setStats] = useState({
+    safe: 0,
+    moderate: 0,
+    danger: 0,
+  });
+
+
+  const mapContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style: "https://demotiles.maplibre.org/style.json",
+      center: [121.056, 14.554], // BGC example
+      zoom: 13,
+    });
+
+    // Mock safety incident data
+    const mockPoints = {
+      type: "FeatureCollection",
+      features: [
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.056, 14.554] } },
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.060, 14.552] } },
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.058, 14.556] } },
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.062, 14.553] } },
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.055, 14.551] } },
+        { type: "Feature", geometry: { type: "Point", coordinates: [121.063, 14.557] } },
+      ],
+    };
+
+    map.on("load", () => {
+      map.addSource("heatmap-points", {
+        type: "geojson",
+        data: mockPoints,
+      });
+
+      map.addLayer({
+        id: "heatmap-layer",
+        type: "heatmap",
+        source: "heatmap-points",
+        paint: {
+          "heatmap-weight": 1,
+          "heatmap-intensity": 1.2,
+          "heatmap-radius": 35,
+          "heatmap-opacity": 0.85,
+          "heatmap-color": [
+            "interpolate",
+            ["linear"],
+            ["heatmap-density"],
+            0, "rgba(0,0,255,0)",
+            0.2, "rgba(0,255,255,0.5)",
+            0.4, "rgba(0,255,0,0.7)",
+            0.6, "rgba(255,255,0,0.8)",
+            1, "rgba(255,0,0,0.9)"
+          ]
+        }
+      });
+    });
+
+    return () => map.remove();
+  }, []);
+
   return (
     <div
       style={{
@@ -75,7 +171,7 @@ export default function Community() {
             Aggregated safety reports from your community
           </p>
 
-          {/* Inner Card */}
+          {/* Stats Row */}
           <div
             style={{
               marginTop: "25px",
@@ -105,7 +201,7 @@ export default function Community() {
                   fontWeight: 700,
                 }}
               >
-                156
+                {stats.safe}
               </h2>
               <p
                 style={{
@@ -139,7 +235,7 @@ export default function Community() {
                   fontWeight: 700,
                 }}
               >
-                89
+                {stats.moderate}
               </h2>
               <p
                 style={{
@@ -173,7 +269,7 @@ export default function Community() {
                   fontWeight: 700,
                 }}
               >
-                65
+                {stats.danger}
               </h2>
               <p
                 style={{
@@ -202,58 +298,29 @@ export default function Community() {
             marginBottom: "30px",
           }}
         >
-          {/* Inner Card */}
-          <div
+          <h2
             style={{
-              background: "#ffffff",
-              borderRadius: "16px",
-              padding: "60px 40px",
-              boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
+              fontSize: "22px",
+              margin: 0,
+              color: colors.purpleDark,
+              fontWeight: 700,
+              marginBottom: "18px",
             }}
           >
-            {/* Icon */}
-            <img
-              src={"/mnt/data/1f50843c-364a-4298-9f50-abdc01b30d16.png"}
-              alt="Map Icon"
-              style={{
-                width: 55,
-                height: 55,
-                objectFit: "contain",
-                marginBottom: "18px",
-                opacity: 0.95,
-              }}
-            />
+            Community Safety Heat Map
+          </h2>
 
-            {/* Title */}
-            <h3
-              style={{
-                fontSize: "20px",
-                margin: 0,
-                color: colors.purple,
-                fontWeight: 700,
-                marginBottom: "6px",
-              }}
-            >
-              Aggregated Safety Heat Map
-            </h3>
-
-            {/* Subtitle */}
-            <p
-              style={{
-                margin: 0,
-                fontSize: "15px",
-                color: colors.purple,
-                opacity: 0.7,
-              }}
-            >
-              Showing incidents with blurred location data
-            </p>
-          </div>
+          {/* ACTUAL MAPLIRE HEATMAP */}
+          <div
+            ref={mapContainerRef}
+            style={{
+              width: "100%",
+              height: "350px",
+              borderRadius: "14px",
+              overflow: "hidden",
+              boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
+            }}
+          />
         </div>
 
         {/* THIRD OUTER WHITE CARD — Recent Reports */}
@@ -268,272 +335,205 @@ export default function Community() {
             marginBottom: "30px",
           }}
         >
-          {/* Section Title */}
-          <h2
+          {/* Section Title + Sort Button */}
+          <div
             style={{
-              fontSize: "22px",
-              margin: 0,
-              color: colors.purpleDark,
-              fontWeight: 700,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
               marginBottom: "20px",
             }}
           >
-            Recent Reports
-          </h2>
-
-          {/* ===== REPORT ITEM 1 ===== */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "14px",
-              padding: "20px 25px",
-              boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
-              marginBottom: "18px",
-            }}
-          >
-            {/* Header Row */}
-            <div
+            <h2
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "6px",
+                fontSize: "22px",
+                margin: 0,
+                color: colors.purpleDark,
+                fontWeight: 700,
               }}
             >
-              {/* Left Title + Badge */}
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <h3
+              Recent Reports
+            </h2>
+
+            {/* SORT BUTTON */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowSortMenu(!showSortMenu)}
+                style={{
+                  background: "white",
+                  padding: "2px 25px",
+                  borderRadius: "12px",
+                  border: "2px solid #D8D8FF",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  color: colors.purple,
+                  boxShadow: "0px 2px 6px rgba(0,0,0,0.05)",
+                }}
+              >
+                {/* Sort Icon */}
+                <span style={{ display: "flex", flexDirection: "column", marginRight: "4px" }}>
+                  <span style={{ color: colors.purpleDark }}>↑</span>
+                  <span style={{ color: colors.purple }}>↓</span>
+                </span>
+                Sort
+              </button>
+
+              {/* DROPDOWN MENU */}
+              {showSortMenu && (
+                <div
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "48px",
+                    background: "white",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                    width: "150px",
+                    padding: "10px 0",
+                    zIndex: 50,
+                  }}
+                >
+                  {[
+                    { key: "safety", label: "by Safety" },
+                    { key: "date", label: "by Date" },
+                    { key: "rating", label: "by Rating" },
+                    { key: "area", label: "by Area" },
+                  ].map((item) => (
+                    <div
+                      key={item.key}
+                      onClick={() => {
+                        setSortOption(item.key);
+                        setShowSortMenu(false);
+                      }}
+                      style={{
+                        padding: "10px 16px",
+                        cursor: "pointer",
+                        color: colors.purple,
+                        fontSize: "14px",
+                      }}
+                      onMouseOver={(e) => (e.target.style.background = "#F2EEFF")}
+                      onMouseOut={(e) => (e.target.style.background = "white")}
+                    >
+                      {item.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* RECENT REPORTS LIST — DYNAMIC */}
+          {reports.length === 0 ? (
+            <p style={{ opacity: 0.6, fontSize: "14px", textAlign: "center" }}>
+              No recent reports available.
+            </p>
+          ) : (
+            reports.map((rep) => (
+              <div
+                key={rep.id}
+                style={{
+                  background: "#ffffff",
+                  borderRadius: "14px",
+                  padding: "20px 25px",
+                  boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+                  marginBottom: "18px",
+                }}
+              >
+                {/* Header Row */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {/* Left Title + Badge */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: "18px",
+                        fontWeight: 700,
+                        color: colors.purpleDark,
+                      }}
+                    >
+                      {rep.concern === "Other" ? rep.other_concern : rep.concern}
+                    </h3>
+
+                    {/* Severity Badge */}
+                    <span
+                      style={{
+                        background:
+                          rep.severity === "Safe"
+                            ? "#E7F8E7"
+                            : rep.severity === "Moderate"
+                              ? "#FFF3C8"
+                              : "#FFE5E5",
+                        color:
+                          rep.severity === "Safe"
+                            ? "#27A327"
+                            : rep.severity === "Moderate"
+                              ? "#D7A300"
+                              : "#D63333",
+                        padding: "3px 10px",
+                        borderRadius: "10px",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {rep.severity}
+                    </span>
+                  </div>
+
+                  {/* Status Badge */}
+                  <span
+                    style={{
+                      background:
+                        rep.status === "Reviewed" ? "#E3F3FF" : "#FFEFBF",
+                      color:
+                        rep.status === "Reviewed" ? "#007BCD" : "#DFA800",
+                      padding: "6px 16px",
+                      borderRadius: "14px",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {rep.status}
+                  </span>
+                </div>
+
+                {/* Meta Info */}
+                <p
                   style={{
                     margin: 0,
-                    fontSize: "18px",
-                    fontWeight: 700,
+                    fontSize: "13px",
+                    color: colors.purpleDark,
+                    opacity: 0.7,
+                    marginBottom: "10px",
+                  }}
+                >
+                  {rep.location_name} • {new Date(rep.created_at).toLocaleString()}
+                </p>
+
+                {/* Description */}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "14px",
+                    lineHeight: "20px",
                     color: colors.purpleDark,
                   }}
                 >
-                  Poor Lighting
-                </h3>
-
-                {/* Moderate Badge */}
-                <span
-                  style={{
-                    background: "#FFF3C8",
-                    color: "#D7A300",
-                    padding: "3px 10px",
-                    borderRadius: "10px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Moderate
-                </span>
+                  {rep.details}
+                </p>
               </div>
+            ))
+          )}
 
-              {/* Status Badge */}
-              <span
-                style={{
-                  background: "#FFEFBF",
-                  color: "#DFA800",
-                  padding: "6px 16px",
-                  borderRadius: "14px",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                }}
-              >
-                Pending
-              </span>
-            </div>
-
-            {/* Meta Info */}
-            <p
-              style={{
-                margin: 0,
-                fontSize: "13px",
-                color: colors.purpleDark,
-                opacity: 0.7,
-                marginBottom: "10px",
-              }}
-            >
-              Starbucks near Uptown BGC, Taguig • 2 hours ago
-            </p>
-
-            {/* Description */}
-            <p
-              style={{
-                margin: 0,
-                fontSize: "14px",
-                lineHeight: "20px",
-                color: colors.purpleDark,
-              }}
-            >
-              Nire-report ko po ang major outage ng mga street light dito sa block ng 9th Avenue...
-            </p>
-          </div>
-
-          {/* ===== REPORT ITEM 2 ===== */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "14px",
-              padding: "20px 25px",
-              boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
-              marginBottom: "18px",
-            }}
-          >
-            {/* Header Row */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "6px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: colors.purpleDark,
-                  }}
-                >
-                  Harrassment
-                </h3>
-
-                {/* Danger Badge */}
-                <span
-                  style={{
-                    background: "#FFE5E5",
-                    color: "#D63333",
-                    padding: "3px 10px",
-                    borderRadius: "10px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Danger
-                </span>
-              </div>
-
-              <span
-                style={{
-                  background: "#E3F3FF",
-                  color: "#007BCD",
-                  padding: "6px 16px",
-                  borderRadius: "14px",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                }}
-              >
-                Reviewed
-              </span>
-            </div>
-
-            <p
-              style={{
-                margin: 0,
-                fontSize: "13px",
-                color: colors.purpleDark,
-                opacity: 0.7,
-                marginBottom: "10px",
-              }}
-            >
-              EDSA Busway Station 3 • 5 hours ago
-            </p>
-
-            <p
-              style={{
-                margin: 0,
-                fontSize: "14px",
-                lineHeight: "20px",
-                color: colors.purpleDark,
-              }}
-            >
-              Nire-report ko po yung verbal harassment na akin sa EDSA Busway Station 3...
-            </p>
-          </div>
-
-          {/* ===== REPORT ITEM 3 ===== */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "14px",
-              padding: "20px 25px",
-              boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "6px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: colors.purpleDark,
-                  }}
-                >
-                  Other Concern
-                </h3>
-
-                {/* Safe Badge */}
-                <span
-                  style={{
-                    background: "#E7F8E7",
-                    color: "#27A327",
-                    padding: "3px 10px",
-                    borderRadius: "10px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Safe
-                </span>
-              </div>
-
-              <span
-                style={{
-                  background: "#E3F3FF",
-                  color: "#007BCD",
-                  padding: "6px 16px",
-                  borderRadius: "14px",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                }}
-              >
-                Reviewed
-              </span>
-            </div>
-
-            <p
-              style={{
-                margin: 0,
-                fontSize: "13px",
-                color: colors.purpleDark,
-                opacity: 0.7,
-                marginBottom: "10px",
-              }}
-            >
-              PITX • 5 hours ago
-            </p>
-
-            <p
-              style={{
-                margin: 0,
-                fontSize: "14px",
-                lineHeight: "20px",
-                color: colors.purpleDark,
-              }}
-            >
-              Nire-report ko po ang minor issue dito sa PITX...
-            </p>
-          </div>
         </div>
 
         {/* Persistent Navbar */}
