@@ -595,6 +595,21 @@ export default function Step2({ onNext, onBack }) {
               </div>
             )}
 
+            {/* TERMS */}
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: 11,
+                opacity: 0.6,
+                marginTop: 20,
+              }}
+            >
+              By continuing, you agree to our{" "}
+              <span style={{ color: colors.darkPurple }}>Terms & Conditions</span>{" "}
+              and{" "}
+              <span style={{ color: colors.darkPurple }}>Privacy Policies</span>.
+            </p>
+
             {/* BUTTONS */}
             <div
               style={{

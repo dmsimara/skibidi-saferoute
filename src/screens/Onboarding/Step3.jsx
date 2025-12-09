@@ -52,7 +52,7 @@ export default function Step3({ onNext, onBack }) {
   };
 
   const handleSaveContacts = (contacts) => {
-    saveEmergencyContacts(contacts); 
+    saveEmergencyContacts(contacts);
     setShowEmergencyModal(false);
   };
 
@@ -92,7 +92,7 @@ export default function Step3({ onNext, onBack }) {
             style={{
               backgroundColor: colors.whiteSoft,
               borderRadius: "32px",
-              padding: "35px 40px",
+              padding: "25px 40px",
               boxShadow: "0px 6px 22px rgba(0,0,0,0.10)",
               boxSizing: "border-box",
             }}
@@ -160,6 +160,18 @@ export default function Step3({ onNext, onBack }) {
               />
             </div>
 
+            {/* NOTE */}
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: 13,
+                opacity: 0.6,
+                marginTop: 20,
+              }}
+            >
+              <strong>Your data is stored locally on this device only.</strong>
+            </p>
+
             {/* BUTTONS */}
             <div
               style={{
@@ -218,7 +230,7 @@ export default function Step3({ onNext, onBack }) {
               setToggles((prev) => ({ ...prev, emergency: false }));
             }}
             onAllowAccess={() => setShowEmergencyModal(false)}
-            onAddTrusted={handleSaveContacts} 
+            onAddTrusted={handleSaveContacts}
           />
         )}
       </motion.div>

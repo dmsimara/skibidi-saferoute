@@ -7,6 +7,8 @@ import Report from "./screens/Report/Report";
 import Community from "./screens/Community/Community";
 import Dashboard from "./screens/Dashboard/Dashboard";
 import Settings from "./screens/Settings/Settings";
+import SignIn from "./screens/SignIn";
+import SignUp from "./screens/SignUp";    
 
 function App() {
   return (
@@ -23,9 +25,7 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/"
-        element={
-          <Splash onFinish={() => navigate("/onboarding")} />
-        }
+        element={<Splash onFinish={() => navigate("/onboarding")} />}
       />
 
       <Route path="/onboarding" element={<Onboarding />} />
@@ -34,6 +34,8 @@ function AppRoutes() {
       <Route path="/community" element={<Community />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />    
     </Routes>
   );
 }

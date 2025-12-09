@@ -1,10 +1,13 @@
 import colors from "../../styles/colors";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
-import { useState } from "react";
-import { title } from "framer-motion/client";
+import { useState, useEffect } from "react";
+import { supabase } from "../../supabaseClient";
 
 export default function Settings() {
+  const navigate = useNavigate();
+
   // Toggle states for each permission
   const [toggles, setToggles] = useState({
     location: true,
@@ -14,7 +17,28 @@ export default function Settings() {
     emergencyContact: true,
     cameraMedia: true,
     hideSensitive: true,
+    language: true,
+    accessibility: false,
   });
+
+  async function handleLogout() {
+    try {
+      await supabase.auth.signOut();
+      navigate("/signin");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  }
+
+
+  const [user, setUser] = useState(null);
+
+  // Check session on load
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data?.user || null);
+    });
+  }, []);
 
   function toggleSwitch(key) {
     setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -117,7 +141,7 @@ export default function Settings() {
               Account
             </h3>
 
-            {/* Row: Guest User */}
+            {/* Row: User Info */}
             <div
               style={{
                 display: "flex",
@@ -138,7 +162,7 @@ export default function Settings() {
                       color: colors.purpleDark,
                     }}
                   >
-                    Guest User
+                    {user ? user.email : "Guest User"}
                   </h4>
 
                   <p
@@ -149,42 +173,63 @@ export default function Settings() {
                       color: colors.purpleDark,
                     }}
                   >
-                    Using app anonymously
+                    {user ? "Logged in" : "Using app anonymously"}
                   </p>
                 </div>
               </div>
 
+              {/* STATUS PILL */}
               <span
                 style={{
-                  background: "#DFFFE5",
+                  background: user ? "#E7F0FF" : "#DFFFE5",
                   padding: "6px 14px",
                   borderRadius: "20px",
                   fontSize: "12px",
                   fontWeight: 700,
-                  color: "#1A9A30",
+                  color: user ? "#3A64C9" : "#1A9A30",
                 }}
               >
-                Guest User
+                {user ? "Logged in" : "Guest User"}
               </span>
             </div>
 
-            {/* Sign In Button */}
-            <button
-              style={{
-                width: "100%",
-                padding: "12px 0",
-                borderRadius: "20px",
-                border: `2px solid ${colors.purple}`,
-                background: "white",
-                color: colors.purple,
-                fontWeight: 700,
-                fontSize: "15px",
-                cursor: "pointer",
-                marginTop: "10px",
-              }}
-            >
-              Sign In for Advance Feature
-            </button>
+            {/* CTA BUTTON */}
+            {!user ? (
+              <button
+                onClick={() => navigate("/signin")}
+                style={{
+                  width: "100%",
+                  padding: "12px 0",
+                  borderRadius: "20px",
+                  border: `2px solid ${colors.purple}`,
+                  background: "white",
+                  color: colors.purple,
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                Sign In for Advanced Features
+              </button>
+            ) : (
+              <button
+                style={{
+                  width: "100%",
+                  padding: "12px 0",
+                  borderRadius: "20px",
+                  border: `2px solid ${colors.purple}`,
+                  background: "white",
+                  color: colors.purple,
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                Sync this device’s data to your account?
+              </button>
+            )}
           </div>
 
           {/* PERMISSIONS SECTION */}
@@ -329,7 +374,6 @@ export default function Settings() {
             </span>
           </div>
 
-          {/* Consent Items */}
           {[
             { title: "Location access", date: "November 18, 2025", status: "granted" },
             { title: "Camera access", date: "November 18, 2025", status: "revoked" },
@@ -371,7 +415,6 @@ export default function Settings() {
                 </p>
               </div>
 
-              {/* STATUS PILL */}
               <span
                 style={{
                   padding: "6px 14px",
@@ -418,17 +461,15 @@ export default function Settings() {
               icon: "📄",
               title: "Terms & Conditions",
               subtitle: "Read more about our Terms & Conditions here.",
-              toggle: null,
             },
             {
               icon: "🔒",
               title: "Privacy Policy",
               subtitle: "Read more about Privacy Policies here.",
-              toggle: null,
             },
-          ].map((item, index) => (
+          ].map((item, idx) => (
             <div
-              key={index}
+              key={idx}
               style={{
                 background: "white",
                 padding: "18px 22px",
@@ -467,7 +508,6 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Toggle only for first 2 */}
               {item.toggle ? (
                 <div
                   onClick={() =>
@@ -539,13 +579,24 @@ export default function Settings() {
                 lineHeight: "20px",
               }}
             >
-              You can revoke any permission at any time. Some features may be limited
-              when permissions are disabled.
+              You can revoke any permission at any time.
+              Some features may be limited when permissions are disabled.
             </p>
           </div>
 
           {/* SIGN OUT BUTTON */}
           <button
+            onClick={handleLogout}
+            onMouseEnter={(e) => {
+              e.target.style.background = colors.purple;
+              e.target.style.color = "white";
+              e.target.style.border = `2px solid ${colors.purple}`;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "white";
+              e.target.style.color = colors.purpleDark;
+              e.target.style.border = `2px solid ${colors.purple}`;
+            }}
             style={{
               padding: "12px 40px",
               borderRadius: "20px",
@@ -558,6 +609,7 @@ export default function Settings() {
               display: "block",
               margin: "0 auto",
               marginTop: "10px",
+              transition: "0.2s ease",
             }}
           >
             Sign Out

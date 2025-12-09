@@ -259,9 +259,8 @@ export default function Step1({ onNext }) {
                     style={{
                       padding: "20px 10px",
                       borderRadius: "14px",
-                      border: `2px solid ${
-                        isActive ? colors.purple : colors.purpleLight
-                      }`,
+                      border: `2px solid ${isActive ? colors.purple : colors.purpleLight
+                        }`,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -320,6 +319,21 @@ export default function Step1({ onNext }) {
               />
             )}
 
+            {/* TERMS */}
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: 11,
+                opacity: 0.6,
+                marginTop: 20,
+              }}
+            >
+              By continuing, you agree to our{" "}
+              <span style={{ color: colors.darkPurple }}>Terms & Conditions</span>{" "}
+              and{" "}
+              <span style={{ color: colors.darkPurple }}>Privacy Policies</span>.
+            </p>
+
             {/* Next button */}
             <div style={{ textAlign: "right" }}>
               <PrimaryButton
@@ -330,9 +344,9 @@ export default function Step1({ onNext }) {
                   })
                 }
                 style={{
-                  padding: "10px 30px",    
-                  borderRadius: "18px",   
-                  fontSize: "14px",       
+                  padding: "10px 30px",
+                  borderRadius: "18px",
+                  fontSize: "14px",
                 }}
                 disabled={!selected}
               >

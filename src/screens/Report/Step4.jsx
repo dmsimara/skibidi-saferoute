@@ -3,10 +3,18 @@ import colors from "../../styles/colors";
 import Navbar from "../../components/Navbar";
 import PrimaryButton from "../../components/PrimaryButton";
 import OutlineButton from "../../components/OutlineButton";
+import ThankYouFlagModal from "../../components/ThankYouFlagModal";
+import { useState } from "react";
 import logo from "../../assets/images/splash/logo-text.png";
 import checkIcon from "../../assets/images/report/check.png";
 
 export default function Step4({ trackingId, onNewReport, onViewReports }) {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div
       style={{
@@ -254,6 +262,26 @@ export default function Step4({ trackingId, onNewReport, onViewReports }) {
               >
                 View Community Reports
               </OutlineButton>
+
+              <OutlineButton
+                onClick={openModal}
+                style={{
+                  padding: "10px 30px",
+                  fontSize: "14px",
+                  width: "60%",
+                  borderRadius: "18px",
+                }}
+              >
+                Other Steps You Can Take
+              </OutlineButton>
+
+              {/* Modal */}
+              <ThankYouFlagModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onOpenEmergencyTools={() => alert("Open emergency tools")}
+                onOpenLocationShare={() => alert("Open location share")}
+              />
             </div>
           </div>
         </div>

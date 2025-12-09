@@ -1,0 +1,122 @@
+// src/components/DiscardModal.jsx
+import React from "react";
+import colors from "../styles/colors";
+import PrimaryButton from "./PrimaryButton";
+import OutlineButton from "./OutlineButton";
+
+export default function DiscardModal({ isOpen, onClose, onDiscard }) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.35)",
+        backdropFilter: "blur(4px)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 99999,
+      }}
+    >
+      <div
+        style={{
+          width: 480,
+          background: "white",
+          borderRadius: "26px",
+          padding: "50px 40px 40px",
+          textAlign: "center",
+          boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
+          position: "relative",
+        }}
+      >
+        {/* GO BACK BUTTON */}
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: 18,
+            right: 22,
+            background: colors.purpleLight,
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "20px",
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          ← Go Back
+        </button>
+
+        {/* TITLE */}
+        <h2
+          style={{
+            fontSize: 26,
+            fontWeight: 700,
+            marginBottom: 16,
+            color: "#000",
+          }}
+        >
+          Are you sure?
+        </h2>
+
+        {/* DESCRIPTION */}
+        <p
+          style={{
+            fontSize: 15,
+            lineHeight: "22px",
+            color: "#444",
+            opacity: 0.85,
+            width: "85%",
+            margin: "0 auto",
+            marginBottom: 35,
+          }}
+        >
+          If you leave now, all the information you entered will be deleted and
+          can’t be recovered.
+        </p>
+
+        {/* BUTTONS */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "18px",
+            marginTop: "10px",
+          }}
+        >
+          <OutlineButton
+            onClick={onClose}
+            style={{
+              padding: "12px 36px",
+              fontSize: "16px",
+              fontWeight: 700,
+              borderRadius: "25px",
+              borderWidth: "3px",
+            }}
+          >
+            Cancel
+          </OutlineButton>
+
+          <PrimaryButton
+            onClick={onDiscard}
+            style={{
+              padding: "12px 42px",
+              fontSize: "16px",
+              fontWeight: 700,
+              borderRadius: "25px",
+            }}
+          >
+            Discard
+          </PrimaryButton>
+        </div>
+      </div>
+    </div>
+  );
+}

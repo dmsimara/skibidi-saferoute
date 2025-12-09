@@ -4,8 +4,17 @@ import Navbar from "../../components/Navbar";
 import PrimaryButton from "../../components/PrimaryButton";
 import OutlineButton from "../../components/OutlineButton";
 import logo from "../../assets/images/splash/logo-text.png";
+import { useState } from "react";
+import ConfirmSubmitModal from "../../components/ConfirmSubmitModal";
+import DiscardModal from "../../components/DiscardModal";
 
 export default function Step3({ data, onBack, onSubmit }) {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+
+  const openConfirm = () => setIsConfirmOpen(true);
+  const closeConfirm = () => setIsConfirmOpen(false);
+
   const { concern, otherConcern, location, details } = data;
 
   return (
@@ -259,7 +268,7 @@ export default function Step3({ data, onBack, onSubmit }) {
               </p>
 
               <p style={{ fontSize: "12px", marginTop: "5px", opacity: 0.7, color: colors.purpleDark, fontWeight: 500 }}>
-                Reports are reviewed to ensure accuracy and community standards.  
+                Reports are reviewed to ensure accuracy and community standards.
                 False or spam reports may be removed.
               </p>
 
@@ -268,13 +277,28 @@ export default function Step3({ data, onBack, onSubmit }) {
                   fontSize: "12px",
                   marginTop: "10px",
                   opacity: 0.7,
-                  color: colors.purpleDark, 
+                  color: colors.purpleDark,
                   fontWeight: 500,
                 }}
               >
                 Thank you for helping keep our community safe.
               </p>
             </div>
+
+            {/* TERMS */}
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: 11,
+                opacity: 0.6,
+                marginTop: 20,
+              }}
+            >
+              By continuing, you agree to our{" "}
+              <span style={{ color: colors.darkPurple }}>Terms & Conditions</span>{" "}
+              and{" "}
+              <span style={{ color: colors.darkPurple }}>Privacy Policies</span>.
+            </p>
 
             {/* BUTTONS */}
             <div
@@ -296,7 +320,7 @@ export default function Step3({ data, onBack, onSubmit }) {
               </OutlineButton>
 
               <PrimaryButton
-                onClick={onSubmit}
+                onClick={openConfirm}
                 style={{
                   padding: "8px 30px",
                   fontSize: "14px",
@@ -304,6 +328,27 @@ export default function Step3({ data, onBack, onSubmit }) {
               >
                 Submit Report
               </PrimaryButton>
+
+              <ConfirmSubmitModal
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                  setIsConfirmOpen(false);
+                  setIsDiscardOpen(true);   
+                }}
+                onConfirm={() => {
+                  setIsConfirmOpen(false);
+                  onSubmit();  
+                }}
+              />
+
+              <DiscardModal
+                isOpen={isDiscardOpen}
+                onClose={() => setIsDiscardOpen(false)}
+                onDiscard={() => {
+                  setIsDiscardOpen(false);
+                  onBack();    
+                }}
+              />
             </div>
           </div>
         </div>
