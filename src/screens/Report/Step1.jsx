@@ -329,9 +329,13 @@ export default function Step1({ onNext }) {
               }}
             >
               By continuing, you agree to our{" "}
-              <span style={{ color: colors.darkPurple }}>Terms & Conditions</span>{" "}
+              <a href="/terms" style={{ color: colors.purpleDark, fontWeight: 600 }}>
+                Terms & Conditions
+              </a>{" "}
               and{" "}
-              <span style={{ color: colors.darkPurple }}>Privacy Policies</span>.
+              <a href="/privacy" style={{ color: colors.purpleDark, fontWeight: 600 }}>
+                Privacy Policies
+              </a>.
             </p>
 
             {/* Next button */}

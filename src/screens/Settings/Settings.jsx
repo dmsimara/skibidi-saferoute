@@ -2,6 +2,9 @@ import colors from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
+import userIcon from "../../assets/icons/userIcon.png"
+import languageIcon from "../../assets/icons/languageIcon.png"
+import navIcon from "../../assets/icons/navIcon.png"
 import { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 
@@ -151,7 +154,13 @@ export default function Settings() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                <span style={{ fontSize: "28px", opacity: 0.8 }}>👤</span>
+                <span style={{ fontSize: "28px", opacity: 0.8 }}>
+                  <img
+                    src={userIcon}
+                    alt="user"
+                    style={{ width: "32px", height: "32px" }}
+                  />
+                </span>
 
                 <div>
                   <h4
@@ -446,24 +455,24 @@ export default function Settings() {
 
           {[
             {
-              icon: "🌐",
+              icon: languageIcon,
               title: "Language",
               subtitle: "English",
               toggle: "language",
             },
             {
-              icon: "♿",
+              icon: navIcon,
               title: "Accessibility",
               subtitle: "WCAG AA Compliant",
               toggle: "accessibility",
             },
             {
-              icon: "📄",
+              icon: navIcon,
               title: "Terms & Conditions",
               subtitle: "Read more about our Terms & Conditions here.",
             },
             {
-              icon: "🔒",
+              icon: navIcon,
               title: "Privacy Policy",
               subtitle: "Read more about Privacy Policies here.",
             },
@@ -482,7 +491,13 @@ export default function Settings() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                <span style={{ fontSize: "22px", opacity: 0.8 }}>{item.icon}</span>
+                <span style={{ fontSize: "22px", opacity: 0.8 }}>
+                  <img
+                    src={item.icon}
+                    alt={item.title}
+                    style={{ width: "28px", height: "28px" }}
+                  />
+                </span>
 
                 <div>
                   <h4

@@ -1,12 +1,20 @@
 import colors from "../../styles/colors";
 import Navbar from "../../components/Navbar";
 import logo from "../../assets/images/splash/logo-text.png";
+import lockIcon from "../../assets/icons/lockIcon.png"
+import downloadIcon from "../../assets/icons/downloadIcon.png"
+import deleteIcon from "../../assets/icons/deleteIcon.png"
+import routesIcon from "../../assets/icons/routesIcon.png"
+import feedbackIcon from "../../assets/icons/feedbackIcon.png"
+import reportsIcon from "../../assets/icons/reportsIcon.png"
+import safetyIcon from "../../assets/icons/safetyIcon.png"
+import navIcon from "../../assets/icons/navIcon.png"
 
 export default function Dashboard() {
   return (
     <div
       style={{
-        minHeight: "100vh",       
+        minHeight: "100vh",
         width: "100vw",
         overflowX: "hidden",
         overflowY: "auto",
@@ -95,7 +103,11 @@ export default function Dashboard() {
                   color: colors.purpleDark,
                 }}
               >
-                🔒
+                <img
+                  src={lockIcon}
+                  alt="lock"
+                  style={{ width: "32px", height: "32px" }}
+                />
               </span>
               <div>
                 <h3
@@ -220,11 +232,10 @@ export default function Dashboard() {
             My Data
           </h3>
 
-          {/* LIST ITEMS */}
           {[
-            { title: "Routes & Navigation", info: "24 items • Today" },
-            { title: "Safety Feedback", info: "12 items • Yesterday" },
-            { title: "Incident Reports", info: "24 items • Today" },
+            { icon: navIcon, title: "Routes & Navigation", info: "24 items • Today" },
+            { icon: safetyIcon, title: "Safety Feedback", info: "12 items • Yesterday" },
+            { icon: reportsIcon, title: "Incident Reports", info: "24 items • Today" },
           ].map((item, i) => (
             <div
               key={i}
@@ -240,7 +251,19 @@ export default function Dashboard() {
                 cursor: "pointer",
               }}
             >
-              <div>
+              {/* ICON — only render if exists */}
+              {item.icon && (
+                <span style={{ fontSize: "22px", marginRight: "12px" }}>
+                  <img
+                    src={item.icon}
+                    alt={item.title}
+                    style={{ width: "28px", height: "28px" }}
+                  />
+                </span>
+              )}
+
+              {/* TEXT */}
+              <div style={{ flex: 1 }}>
                 <h4
                   style={{
                     margin: 0,
@@ -262,10 +285,6 @@ export default function Dashboard() {
                   {item.info}
                 </p>
               </div>
-
-              <span style={{ fontSize: "18px", color: colors.purpleDark }}>
-                →
-              </span>
             </div>
           ))}
 
@@ -295,7 +314,13 @@ export default function Dashboard() {
               cursor: "pointer",
             }}
           >
-            <span style={{ fontSize: "22px" }}>📤</span>
+            <span style={{ fontSize: "22px" }}>
+              <img
+                src={downloadIcon}
+                alt="export"
+                style={{ width: "30px", height: "30px" }}
+              />
+            </span>
             <div>
               <h4
                 style={{
@@ -335,7 +360,13 @@ export default function Dashboard() {
               border: "1px solid #FFBDBD",
             }}
           >
-            <span style={{ fontSize: "22px", color: "#E32626" }}>🗑️</span>
+            <span style={{ fontSize: "22px", color: "#E32626" }}>
+              <img
+                src={deleteIcon}
+                alt="delete"
+                style={{ width: "28px", height: "28px" }}
+              />
+            </span>
             <div>
               <h4
                 style={{
@@ -451,17 +482,17 @@ export default function Dashboard() {
 
           {[
             {
-              icon: "🗺️",
+              icon: routesIcon,
               title: "Routes:",
               desc: "Anonymized path data used to calculate safety scores",
             },
             {
-              icon: "💬",
+              icon: feedbackIcon,
               title: "Feedback:",
               desc: "Your ratings help improve route recommendations",
             },
             {
-              icon: "📄",
+              icon: reportsIcon,
               title: "Reports:",
               desc: "Incident submissions (stored with chosen privacy level)",
             },
@@ -479,7 +510,13 @@ export default function Dashboard() {
                 gap: "14px",
               }}
             >
-              <span style={{ fontSize: "22px" }}>{item.icon}</span>
+              <span style={{ fontSize: "22px" }}>
+                <img
+                  src={item.icon}
+                  alt={item.title}
+                  style={{ width: "28px", height: "28px" }}
+                />
+              </span>
               <div>
                 <h4
                   style={{

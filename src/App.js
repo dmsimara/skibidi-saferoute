@@ -8,7 +8,9 @@ import Community from "./screens/Community/Community";
 import Dashboard from "./screens/Dashboard/Dashboard";
 import Settings from "./screens/Settings/Settings";
 import SignIn from "./screens/SignIn";
-import SignUp from "./screens/SignUp";    
+import SignUp from "./screens/SignUp";
+import TermsAndConditions from "./screens/Onboarding/TermsAndConditions";
+import PrivacyPolicy from "./screens/Onboarding/PrivacyPolicy";
 
 function App() {
   return (
@@ -35,7 +37,9 @@ function AppRoutes() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />    
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
     </Routes>
   );
 }

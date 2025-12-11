@@ -21,6 +21,26 @@ import OutlineButton from "../../components/OutlineButton";
   `}
 </style>
 
+/* 💜 SAME DUMMY PLACES AS HOME.JSX */
+const PLACES = [
+  { id: "moa", name: "SM Mall of Asia", city: "Pasay, Metro Manila", lat: 14.5353, lng: 120.9822 },
+  { id: "bgc", name: "BGC High Street", city: "Taguig, Metro Manila", lat: 14.5526, lng: 121.0443 },
+  { id: "intramuros", name: "Intramuros", city: "Manila, Metro Manila", lat: 14.5896, lng: 120.9747 },
+  { id: "rizal-park", name: "Rizal Park (Luneta)", city: "Manila, Metro Manila", lat: 14.5829, lng: 120.9790 },
+  { id: "up-diliman", name: "UP Diliman", city: "Quezon City, Metro Manila", lat: 14.6549, lng: 121.0647 },
+  { id: "greenbelt", name: "Greenbelt", city: "Makati, Metro Manila", lat: 14.5518, lng: 121.0223 },
+
+  { id: "vigan", name: "Calle Crisologo", city: "Vigan, Ilocos Sur", lat: 17.5747, lng: 120.3860 },
+  { id: "baguio", name: "Session Road", city: "Baguio City", lat: 16.4120, lng: 120.5960 },
+  { id: "la-union", name: "San Juan Surf Town", city: "La Union", lat: 16.6702, lng: 120.3186 },
+
+  { id: "cebu-it-park", name: "Cebu IT Park", city: "Cebu City", lat: 10.3291, lng: 123.9054 },
+  { id: "panglao", name: "Alona Beach", city: "Panglao, Bohol", lat: 9.5487, lng: 123.7641 },
+
+  { id: "davao-park", name: "People’s Park", city: "Davao City", lat: 7.0733, lng: 125.6128 },
+  { id: "siargao", name: "General Luna Beach", city: "Siargao Island", lat: 9.7963, lng: 126.1653 },
+];
+
 export default function Step2({ onNext, onBack }) {
   const [location, setLocation] = useState("");
   const [details, setDetails] = useState("");
@@ -28,8 +48,9 @@ export default function Step2({ onNext, onBack }) {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const orsKey = process.env.REACT_APP_ORS_KEY;
+  const [typing, setTyping] = useState(false);
 
+  /* FILE UPLOAD HANDLING */
   const handleMediaUpload = (e) => {
     const files = Array.from(e.target.files || []);
     setMedia([...media, ...files]);
@@ -39,28 +60,34 @@ export default function Step2({ onNext, onBack }) {
     setMedia((prev) => prev.filter((_, i) => i !== index));
   };
 
-  async function fetchSuggestions(query) {
-    if (!query) {
+  /* ⭐ LOCAL SEARCH (REPLACES API AUTOCOMPLETE) */
+  function handleLocationSearch(value) {
+    setTyping(true);
+    setLocation(value);
+
+    if (!value.trim()) {
       setSuggestions([]);
       return;
     }
 
-    try {
-      const url = `https://api.openrouteservice.org/geocode/autocomplete?api_key=${orsKey}&text=${encodeURIComponent(
-        query
-      )}&size=5`;
+    const lower = value.toLowerCase();
+    const matches = PLACES.filter(
+      (p) =>
+        p.name.toLowerCase().includes(lower) ||
+        p.city.toLowerCase().includes(lower)
+    );
 
-      const resp = await fetch(url);
-      const data = await resp.json();
-
-      if (data?.features) {
-        setSuggestions(data.features);
-      }
-    } catch (err) {
-      console.error("Location autocomplete error:", err);
-    }
+    setSuggestions(matches);
   }
 
+  /* SELECT PLACE FROM SUGGESTION */
+  function selectPlace(place) {
+    setTyping(false);
+    setLocation(`${place.name}, ${place.city}`);
+    setLatitude(place.lat);
+    setLongitude(place.lng);
+    setSuggestions([]);
+  }
 
   return (
     <div
@@ -88,15 +115,7 @@ export default function Step2({ onNext, onBack }) {
           paddingBottom: "30px",
         }}
       >
-        {/* Logo */}
-        <img
-          src={logo}
-          alt="Liwa"
-          style={{
-            width: 120,
-            marginBottom: "25px",
-          }}
-        />
+        <img src={logo} alt="Liwa" style={{ width: 120, marginBottom: "25px" }} />
 
         {/* Outer White Card */}
         <div
@@ -110,30 +129,6 @@ export default function Step2({ onNext, onBack }) {
             marginBottom: "30px",
           }}
         >
-          {/* Title */}
-          <h2
-            style={{
-              fontSize: "26px",
-              margin: 0,
-              color: colors.purpleDark,
-              fontWeight: 700,
-              marginBottom: "5px",
-            }}
-          >
-            Report Incident
-          </h2>
-
-          <p
-            style={{
-              marginTop: "4px",
-              fontSize: "14px",
-              opacity: 0.7,
-              color: colors.purpleDark,
-            }}
-          >
-            Help improve community safety by reporting incidents
-          </p>
-
           {/* Inner Card */}
           <div
             style={{
@@ -144,95 +139,6 @@ export default function Step2({ onNext, onBack }) {
               boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
             }}
           >
-            {/* PROGRESS STEPS */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "20px",
-                marginBottom: "25px",
-                alignItems: "center",
-              }}
-            >
-              {/* Step 1 Complete */}
-              <div
-                style={{
-                  width: "50px",
-                  height: "4px",
-                  backgroundColor: colors.purpleDark,
-                  borderRadius: "2px",
-                }}
-              />
-              <div
-                style={{
-                  width: "26px",
-                  height: "26px",
-                  borderRadius: "50%",
-                  backgroundColor: colors.purpleDark,
-                  color: "white",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "13px",
-                  fontWeight: "700",
-                }}
-              >
-                1
-              </div>
-
-              {/* Step 2 Active */}
-              <div
-                style={{
-                  width: "50px",
-                  height: "4px",
-                  backgroundColor: "#E5E5F0",
-                  borderRadius: "2px",
-                }}
-              />
-              <div
-                style={{
-                  width: "26px",
-                  height: "26px",
-                  borderRadius: "50%",
-                  backgroundColor: "#E5E5F0",
-                  color: "#444",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "13px",
-                  fontWeight: "700",
-                }}
-              >
-                2
-              </div>
-
-              {/* Step 3 */}
-              <div
-                style={{
-                  width: "50px",
-                  height: "4px",
-                  backgroundColor: "#E5E5F0",
-                  borderRadius: "2px",
-                }}
-              />
-              <div
-                style={{
-                  width: "26px",
-                  height: "26px",
-                  borderRadius: "50%",
-                  backgroundColor: "#E5E5F0",
-                  color: "#444",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "13px",
-                  fontWeight: "700",
-                }}
-              >
-                3
-              </div>
-            </div>
-
             {/* Title */}
             <h2
               style={{
@@ -247,14 +153,7 @@ export default function Step2({ onNext, onBack }) {
             </h2>
 
             {/* LOCATION INPUT */}
-            <label
-              style={{
-                fontSize: "14px",
-                color: colors.purpleDark,
-                fontWeight: 700,
-                marginLeft: "-10px",
-              }}
-            >
+            <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
               Location
             </label>
 
@@ -272,98 +171,63 @@ export default function Step2({ onNext, onBack }) {
                 marginLeft: "-15px",
               }}
             >
-              <img
-                src={locationIcon}
-                alt="Location Icon"
-                style={{
-                  width: 18,
-                  height: 18,
-                  marginRight: "8px",
-                  opacity: 0.6,
-                  objectFit: "contain",
-                }}
-              />
+              <img src={locationIcon} alt="" style={{ width: 18, marginRight: 8, opacity: 0.6 }} />
+
               <input
                 type="text"
                 value={location}
-                onChange={(e) => {
-                  setLocation(e.target.value);
-                  fetchSuggestions(e.target.value);
-                }}
-                placeholder="Enter Location Name or Area Name"
+                onChange={(e) => handleLocationSearch(e.target.value)}
+                placeholder="Enter Location Name"
                 style={{
                   width: "100%",
                   border: "none",
                   outline: "none",
-                  fontSize: "14px",
+                  fontSize: 14,
                   background: "transparent",
                 }}
               />
             </div>
 
-            {/* Suggestions Dropdown */}
-            {suggestions.length > 0 && (
+            {/* LOCAL SUGGESTIONS */}
+            {typing && suggestions.length > 0 && (
               <div
                 style={{
                   width: "100%",
                   backgroundColor: "white",
                   borderRadius: "10px",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  marginTop: "5px",
-                  marginBottom: "15px",
+                  marginTop: "-18px",
+                  marginBottom: "20px",
                   position: "relative",
                   zIndex: 50,
-                  marginLeft: "-15px",
                   padding: "5px 0",
+                  marginLeft: "-15px",
                 }}
               >
-                {suggestions.map((s, i) => (
+                {suggestions.map((p, i) => (
                   <div
                     key={i}
-                    onClick={() => {
-                      const lat = s.geometry.coordinates[1];
-                      const lng = s.geometry.coordinates[0];
-
-                      // Fill fields automatically
-                      setLocation(s.properties.label);
-                      setLatitude(lat);
-                      setLongitude(lng);
-                      setSuggestions([]);
-
-                      console.log("📌 Selected location:", {
-                        name: s.properties.label,
-                        lat,
-                        lng,
-                      });
-                    }}
+                    onClick={() => selectPlace(p)}
                     style={{
                       padding: "12px 15px",
                       cursor: "pointer",
-                      fontSize: "14px",
-                      color: colors.purpleDark,
                       borderBottom: "1px solid rgba(0,0,0,0.08)",
+                      fontSize: 14,
+                      color: colors.purpleDark,
                     }}
                   >
-                    {s.properties.label}
+                    <strong>{p.name}</strong>
+                    <br />
+                    <span style={{ fontSize: 12, opacity: 0.7 }}>{p.city}</span>
                   </div>
                 ))}
               </div>
             )}
 
-
             {/* LATITUDE */}
-            <label
-              style={{
-                fontSize: "14px",
-                color: colors.purpleDark,
-                fontWeight: 700,
-                marginLeft: "-10px",
-                marginTop: "10px",
-              }}
-            >
+            <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
               Latitude
             </label>
-
             <input
               type="number"
               step="any"
@@ -384,17 +248,9 @@ export default function Step2({ onNext, onBack }) {
             />
 
             {/* LONGITUDE */}
-            <label
-              style={{
-                fontSize: "14px",
-                color: colors.purpleDark,
-                fontWeight: 700,
-                marginLeft: "-10px",
-              }}
-            >
+            <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
               Longitude
             </label>
-
             <input
               type="number"
               step="any"

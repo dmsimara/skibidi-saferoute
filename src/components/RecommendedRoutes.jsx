@@ -24,16 +24,38 @@ export default function RecommendedRoutes({ place, onSelectRoute, onBack }) {
         {
             id: "r1",
             safety: "Safe",
-            distanceKm: 1,
-            durationMin: 12,
-            tags: ["Good Lighting", "Moderate Crowd"],
+            distanceKm: 2.3,
+            durationMin: 9,
+            tags: [
+                "Well-Lit Areas",
+                "Main Roads",
+                "CCTV Coverage",
+                "Frequent Pedestrians"
+            ],
         },
         {
             id: "r2",
             safety: "Moderately Safe",
-            distanceKm: 1,
-            durationMin: 12,
-            tags: ["Good Lighting", "Moderate Crowd"],
+            distanceKm: 2.7,
+            durationMin: 11,
+            tags: [
+                "Mixed Lighting",
+                "Residential Streets",
+                "Light Traffic",
+                "Occasional Pedestrians"
+            ],
+        },
+        {
+            id: "r3",
+            safety: "Unsafe",
+            distanceKm: 1.9,
+            durationMin: 7,
+            tags: [
+                "Low Lighting",
+                "Quiet Zones",
+                "Few Establishments",
+                "Minimal Crowd"
+            ],
         },
     ];
 
