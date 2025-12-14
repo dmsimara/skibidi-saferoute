@@ -49,7 +49,7 @@ export default function Community() {
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: "https://tiles.openfreemap.org/styles/liberty",
+      style: "https://tiles.openfreemap.org/styles/liberty/style.json",
       center: [121.056, 14.554], // BGC
       zoom: 13,
     });
