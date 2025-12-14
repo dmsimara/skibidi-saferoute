@@ -50,8 +50,8 @@ export default function Community() {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: "https://tiles.openfreemap.org/styles/liberty/style.json",
-      center: [121.056, 14.554], // BGC
-      zoom: 13,
+      center: [0, 0], 
+      zoom: 1,
     });
 
     // Mock safety incident data
