@@ -90,7 +90,7 @@ export default function ThankYouFlagModal({ isOpen, onClose, onOpenEmergencyTool
                     <li onClick={onOpenEmergencyTools}>
                         View emergency tools and resources
                     </li>
-                    <li onClick={() => (window.location.href = "/reports")}>
+                    <li onClick={() => (window.location.href = "/community")}>
                         Check nearby reports
                     </li>
                     <li onClick={onOpenLocationShare}>

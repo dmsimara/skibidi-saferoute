@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import colors from "../../styles/colors";
 
 export default function PrivacyPolicy({ onClose }) {
     const [scale, setScale] = useState(1);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const updateScale = () => {
@@ -287,7 +290,10 @@ export default function PrivacyPolicy({ onClose }) {
                         }}
                     >
                         <button
-                            onClick={onClose}
+                            onClick={() => {
+                                onClose?.();
+                                navigate("/home");
+                            }}
                             style={{
                                 border: "none",
                                 backgroundColor: colors.purpleLight,

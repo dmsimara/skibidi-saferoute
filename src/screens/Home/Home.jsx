@@ -288,7 +288,16 @@ export default function Home() {
           <img src={logo} alt="Liwa" style={{ width: 120 }} />
 
           {/* Search */}
-          <div style={{ width: "100%", maxWidth: 800 }}>{renderSearchBar()}</div>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 800,
+              alignSelf: "flex-start",  
+              marginLeft: 20,
+            }}
+          >
+            {renderSearchBar()}
+          </div>
 
           {/* Map (ALWAYS VISIBLE) */}
           <div

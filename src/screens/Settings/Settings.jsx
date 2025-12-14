@@ -13,14 +13,14 @@ export default function Settings() {
 
   // Toggle states for each permission
   const [toggles, setToggles] = useState({
-    location: true,
-    dataSharing: true,
+    location: false,
+    dataSharing: false,
     anonymous: true,
-    notifications: true,
-    emergencyContact: true,
-    cameraMedia: true,
+    notifications: false,
+    emergencyContact: false,
+    cameraMedia: false,
     hideSensitive: true,
-    language: true,
+    language: false,
     accessibility: false,
   });
 
