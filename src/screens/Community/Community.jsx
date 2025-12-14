@@ -49,8 +49,8 @@ export default function Community() {
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
-      center: [121.056, 14.554], // BGC example
+      style: "https://tiles.openfreemap.org/styles/liberty",
+      center: [121.056, 14.554], // BGC
       zoom: 13,
     });
 
@@ -68,6 +68,9 @@ export default function Community() {
     };
 
     map.on("load", () => {
+      // 🔐 Ensure correct sizing
+      map.resize();
+
       map.addSource("heatmap-points", {
         type: "geojson",
         data: mockPoints,
@@ -79,20 +82,21 @@ export default function Community() {
         source: "heatmap-points",
         paint: {
           "heatmap-weight": 1,
-          "heatmap-intensity": 1.2,
-          "heatmap-radius": 35,
-          "heatmap-opacity": 0.85,
+          "heatmap-intensity": 1.3,
+          "heatmap-radius": 40,
+          "heatmap-opacity": 0.75,
           "heatmap-color": [
             "interpolate",
             ["linear"],
             ["heatmap-density"],
-            0, "rgba(0,0,255,0)",
-            0.2, "rgba(0,255,255,0.5)",
-            0.4, "rgba(0,255,0,0.7)",
-            0.6, "rgba(255,255,0,0.8)",
-            1, "rgba(255,0,0,0.9)"
+            0, "rgba(0,0,0,0)",
+            0.2, "#7DD3FC",   // light blue
+            0.4, "#34D399",   // green
+            0.6, "#FACC15",   // yellow
+            0.8, "#FB923C",   // orange
+            1, "#EF4444"      // red
           ]
-        }
+        },
       });
     });
 

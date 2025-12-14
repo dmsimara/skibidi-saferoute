@@ -23,7 +23,7 @@ export default function MapView({
 
     const map = new maplibregl.Map({
       container: mapRef.current,
-      style: `https://api.maptiler.com/maps/streets/style.json?key=${apiKey}`,
+      style: "https://tiles.openfreemap.org/styles/liberty",
       center: [0, 0], // ⚠️ temporary, real center set after load
       zoom: 1,
     });
