@@ -50,7 +50,7 @@ export default function Community() {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: "https://tiles.openfreemap.org/styles/liberty/style.json",
-      center: [0, 0], 
+      center: [0, 0],
       zoom: 1,
     });
 
@@ -76,27 +76,36 @@ export default function Community() {
         data: mockPoints,
       });
 
-      map.addLayer({
-        id: "heatmap-layer",
-        type: "heatmap",
-        source: "heatmap-points",
-        paint: {
-          "heatmap-weight": 1,
-          "heatmap-intensity": 1.3,
-          "heatmap-radius": 40,
-          "heatmap-opacity": 0.75,
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
-            0, "rgba(0,0,0,0)",
-            0.2, "#7DD3FC",   // light blue
-            0.4, "#34D399",   // green
-            0.6, "#FACC15",   // yellow
-            0.8, "#FB923C",   // orange
-            1, "#EF4444"      // red
-          ]
-        },
+      map.on("style.load", () => {
+        map.resize();
+
+        map.addSource("heatmap-points", {
+          type: "geojson",
+          data: mockPoints,
+        });
+
+        map.addLayer({
+          id: "heatmap-layer",
+          type: "heatmap",
+          source: "heatmap-points",
+          paint: {
+            "heatmap-weight": 1,
+            "heatmap-intensity": 1.3,
+            "heatmap-radius": 40,
+            "heatmap-opacity": 0.55,
+            "heatmap-color": [
+              "interpolate",
+              ["linear"],
+              ["heatmap-density"],
+              0, "rgba(0,0,0,0)",
+              0.2, "#7DD3FC",
+              0.4, "#34D399",
+              0.6, "#FACC15",
+              0.8, "#FB923C",
+              1, "#EF4444"
+            ]
+          }
+        });
       });
     });
 
