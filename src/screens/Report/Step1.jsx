@@ -9,6 +9,19 @@ export default function Step1({ onNext }) {
   const [selected, setSelected] = useState(null);
   const [otherText, setOtherText] = useState("");
 
+  const handleQuickExit = () => {
+    // Clear current Step 1 input/state (wipes what's on screen)
+    setSelected(null);
+    setOtherText("");
+
+    sessionStorage.removeItem("reportDraft");
+    localStorage.removeItem("reportDraft");
+
+    sessionStorage.setItem("liwa_quick_exit", "1");
+    window.location.assign("/home");
+  };
+
+
   const concerns = [
     { label: "Harassment", icon: require("../../assets/images/report/harassment.png") },
     { label: "Theft", icon: require("../../assets/images/report/theft.png") },
@@ -65,18 +78,62 @@ export default function Step1({ onNext }) {
             marginBottom: "30px",
           }}
         >
-          {/* Title */}
-          <h2
+          {/* Title Row */}
+          <div
             style={{
-              fontSize: "26px",
-              margin: 0,
-              color: colors.purpleDark,
-              fontWeight: 700,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
               marginBottom: "5px",
             }}
           >
-            Report Incident
-          </h2>
+            <h2
+              style={{
+                fontSize: "26px",
+                margin: 0,
+                color: colors.purpleDark,
+                fontWeight: 700,
+              }}
+            >
+              Report Incident
+            </h2>
+
+            {/* Quick Exit Button */}
+            <button
+              type="button"
+              onClick={handleQuickExit}
+              style={{
+                background: "#330972",
+                color: "#fff",
+                border: "none",
+                borderRadius: "20px",
+                padding: "10px 16px",
+                fontSize: "12px",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              {/* White icon (SVG) */}
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ display: "block" }}
+              >
+                <path
+                  d="M13 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-3 17v-6l-2 2-2-2 3.5-3.5c.4-.4.9-.6 1.4-.6H13c.6 0 1.1.2 1.5.6L17 15l-2 2-2-2v7h-3Zm9-9h-4v-2h4v2Z"
+                  fill="#FFFFFF"
+                />
+              </svg>
+
+              Quick-exit
+            </button>
+          </div>
 
           <p
             style={{
@@ -86,7 +143,7 @@ export default function Step1({ onNext }) {
               color: colors.purpleDark,
             }}
           >
-            Help improve community safety by reporting incidents
+            Contribute safely and privately to keep community safety guidance up to date.
           </p>
 
           {/* Inner Card */}
@@ -328,14 +385,10 @@ export default function Step1({ onNext }) {
                 marginTop: 20,
               }}
             >
-              By continuing, you agree to our{" "}
-              <a href="/terms" style={{ color: colors.purpleDark, fontWeight: 600 }}>
-                Terms & Conditions
-              </a>{" "}
-              and{" "}
-              <a href="/privacy" style={{ color: colors.purpleDark, fontWeight: 600 }}>
-                Privacy Policies
-              </a>.
+              Reports are reviewed by trusted safety administrators. Only high-risk or disputed
+              <br />
+              cases are escalated. You can track the status anonymously.
+              <span style={{ color: colors.darkPurple }}> Learn More</span>{" "}
             </p>
 
             {/* Next button */}

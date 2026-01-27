@@ -21,7 +21,6 @@ import OutlineButton from "../../components/OutlineButton";
   `}
 </style>
 
-/* 💜 SAME DUMMY PLACES AS HOME.JSX */
 const PLACES = [
   { id: "moa", name: "SM Mall of Asia", city: "Pasay, Metro Manila", lat: 14.5353, lng: 120.9822 },
   { id: "bgc", name: "BGC High Street", city: "Taguig, Metro Manila", lat: 14.5526, lng: 121.0443 },
@@ -49,6 +48,24 @@ export default function Step2({ onNext, onBack }) {
   const [longitude, setLongitude] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [typing, setTyping] = useState(false);
+
+  const handleQuickExit = () => {
+    // clear current Step2 data (screen + drafts)
+    setLocation("");
+    setDetails("");
+    setMedia([]);
+    setLatitude("");
+    setLongitude("");
+    setSuggestions([]);
+    setTyping(false);
+
+    sessionStorage.removeItem("reportDraft");
+    localStorage.removeItem("reportDraft");
+
+    sessionStorage.setItem("liwa_quick_exit", "1");
+    window.location.assign("/home");  
+  };
+
 
   /* FILE UPLOAD HANDLING */
   const handleMediaUpload = (e) => {
@@ -139,18 +156,60 @@ export default function Step2({ onNext, onBack }) {
               boxShadow: "0px 3px 12px rgba(0,0,0,0.08)",
             }}
           >
-            {/* Title */}
-            <h2
+            {/* Title Row */}
+            <div
               style={{
-                textAlign: "center",
-                fontSize: "22px",
-                color: colors.purpleDark,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 marginBottom: "30px",
-                fontWeight: "700",
               }}
             >
-              Add Details
-            </h2>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "22px",
+                  color: colors.purpleDark,
+                  fontWeight: "700",
+                }}
+              >
+                Add Details
+              </h2>
+
+              <button
+                type="button"
+                onClick={handleQuickExit}
+                style={{
+                  background: "#330972",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "20px",
+                  padding: "10px 16px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {/* White icon (SVG) */}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ display: "block" }}
+                >
+                  <path
+                    d="M13 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-3 17v-6l-2 2-2-2 3.5-3.5c.4-.4.9-.6 1.4-.6H13c.6 0 1.1.2 1.5.6L17 15l-2 2-2-2v7h-3Zm9-9h-4v-2h4v2Z"
+                    fill="#FFFFFF"
+                  />
+                </svg>
+                Quick-exit
+              </button>
+            </div>
 
             {/* LOCATION INPUT */}
             <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
@@ -177,7 +236,7 @@ export default function Step2({ onNext, onBack }) {
                 type="text"
                 value={location}
                 onChange={(e) => handleLocationSearch(e.target.value)}
-                placeholder="Enter Location Name"
+                placeholder="Enter Location Name or Area Name"
                 style={{
                   width: "100%",
                   border: "none",
@@ -187,6 +246,24 @@ export default function Step2({ onNext, onBack }) {
                 }}
               />
             </div>
+
+            {latitude && longitude && (
+              <p
+                style={{
+                  marginTop: "-12px",
+                  marginBottom: "22px",
+                  fontSize: "12px",
+                  color: colors.purpleDark,
+                  opacity: 0.6,
+                  marginLeft: "-15px",
+                }}
+              >
+                Coordinates captured automatically.
+              </p>
+            )}
+
+            <input type="hidden" name="latitude" value={latitude} />
+            <input type="hidden" name="longitude" value={longitude} />
 
             {/* LOCAL SUGGESTIONS */}
             {typing && suggestions.length > 0 && (
@@ -223,53 +300,6 @@ export default function Step2({ onNext, onBack }) {
                 ))}
               </div>
             )}
-
-            {/* LATITUDE */}
-            <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
-              Latitude
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={latitude}
-              onChange={(e) => setLatitude(e.target.value)}
-              placeholder="Latitude"
-              style={{
-                width: "97%",
-                border: "2px solid #e5e5e5",
-                borderRadius: "10px",
-                padding: "10px 12px",
-                fontSize: "14px",
-                outline: "none",
-                marginTop: "6px",
-                marginBottom: "20px",
-                marginLeft: "-15px",
-              }}
-            />
-
-            {/* LONGITUDE */}
-            <label style={{ fontSize: 14, color: colors.purpleDark, fontWeight: 700, marginLeft: "-10px" }}>
-              Longitude
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={longitude}
-              onChange={(e) => setLongitude(e.target.value)}
-              placeholder="Longitude"
-              style={{
-                width: "97%",
-                border: "2px solid #e5e5e5",
-                borderRadius: "10px",
-                padding: "10px 12px",
-                fontSize: "14px",
-                outline: "none",
-                marginTop: "6px",
-                marginBottom: "25px",
-                marginLeft: "-15px",
-              }}
-            />
-
 
             {/* DETAILS INPUT */}
             <label
@@ -460,10 +490,9 @@ export default function Step2({ onNext, onBack }) {
                 marginTop: 20,
               }}
             >
-              By continuing, you agree to our{" "}
-              <span style={{ color: colors.darkPurple }}>Terms & Conditions</span>{" "}
-              and{" "}
-              <span style={{ color: colors.darkPurple }}>Privacy Policies</span>.
+              Reports are reviewed by trusted safety administrators. Only high-risk or disputed
+              <br />
+              cases are escalated. You can track the status anonymously. <span style={{ color: colors.darkPurple }}> Learn more</span>{" "}
             </p>
 
             {/* BUTTONS */}

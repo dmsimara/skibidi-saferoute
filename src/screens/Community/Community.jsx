@@ -444,107 +444,154 @@ export default function Community() {
               No recent reports available.
             </p>
           ) : (
-            reports.map((rep) => (
-              <div
-                key={rep.id}
-                style={{
-                  background: "#ffffff",
-                  borderRadius: "14px",
-                  padding: "20px 25px",
-                  boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
-                  marginBottom: "18px",
-                }}
-              >
-                {/* Header Row */}
+            reports.map((rep) => {
+              const title = rep.concern === "Other" ? rep.other_concern : rep.concern;
+
+              const statusStyles =
+                rep.status === "Reviewed"
+                  ? { bg: "#1E90FF", text: "#ffffff", icon: "✓" } 
+                  : { bg: "#FFC107", text: "#ffffff", icon: "⏱" }; 
+
+              const showDot = rep.severity === "Moderate"; 
+
+              // Avatar: if you don't have an avatar field, show initials fallback
+              const initials =
+                (rep.reporter_name || rep.user_name || "U")
+                  .split(" ")
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((w) => w[0].toUpperCase())
+                  .join("") || "U";
+
+              return (
                 <div
+                  key={rep.id}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "6px",
+                    background: "#ffffff",
+                    borderRadius: "14px",
+                    padding: "22px 26px",
+                    boxShadow: "0px 2px 8px rgba(0,0,0,0.06)",
+                    marginBottom: "18px",
+                    border: "1px solid #E9E6FF",
                   }}
                 >
-                  {/* Left Title + Badge */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  {/* Top Row: Title + Status */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "14px",
+                    }}
+                  >
                     <h3
                       style={{
                         margin: 0,
-                        fontSize: "18px",
-                        fontWeight: 700,
+                        fontSize: "22px",
+                        fontWeight: 800,
                         color: colors.purpleDark,
                       }}
                     >
-                      {rep.concern === "Other" ? rep.other_concern : rep.concern}
+                      {title}
                     </h3>
 
-                    {/* Severity Badge */}
+                    {/* Status pill (Pending/Reviewed) */}
                     <span
                       style={{
-                        background:
-                          rep.severity === "Safe"
-                            ? "#E7F8E7"
-                            : rep.severity === "Moderate"
-                              ? "#FFF3C8"
-                              : "#FFE5E5",
-                        color:
-                          rep.severity === "Safe"
-                            ? "#27A327"
-                            : rep.severity === "Moderate"
-                              ? "#D7A300"
-                              : "#D63333",
-                        padding: "3px 10px",
-                        borderRadius: "10px",
-                        fontSize: "12px",
-                        fontWeight: 600,
+                        background: statusStyles.bg,
+                        color: statusStyles.text,
+                        padding: "6px 12px",
+                        borderRadius: "14px",
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        minWidth: "100px",
+                        justifyContent: "center",
                       }}
                     >
-                      {rep.severity}
+                      <span
+                        style={{
+                          width: "22px",
+                          height: "22px",
+                          borderRadius: "50%",
+                          background: "rgba(255,255,255,0.25)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "13px",
+                          fontWeight: 900,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {statusStyles.icon}
+                      </span>
+                      {rep.status?.[0]?.toUpperCase() + rep.status?.slice(1)}
                     </span>
                   </div>
 
-                  {/* Status Badge */}
-                  <span
+                  {/* Location line */}
+                  <div
                     style={{
-                      background:
-                        rep.status === "Reviewed" ? "#E3F3FF" : "#FFEFBF",
-                      color:
-                        rep.status === "Reviewed" ? "#007BCD" : "#DFA800",
-                      padding: "6px 16px",
-                      borderRadius: "14px",
-                      fontSize: "12px",
-                      fontWeight: 600,
+                      marginTop: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
                     }}
                   >
-                    {rep.status}
-                  </span>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "14px",
+                        color: colors.purple,
+                        opacity: 0.9,
+                      }}
+                    >
+                      {rep.location_name}
+                    </p>
+
+                    {showDot && (
+                      <span
+                        style={{
+                          width: "6px",
+                          height: "6px",
+                          borderRadius: "50%",
+                          background: "#FACC15",
+                          display: "inline-block",
+                          transform: "translateY(1px)",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Divider with centered avatar */}
+                  <div style={{ position: "relative", marginTop: "14px", marginBottom: "14px" }}>
+                    <div
+                      style={{
+                        height: "1px",
+                        background: "#E6E0FF",
+                        width: "100%",
+                      }}
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "14px",
+                      lineHeight: "1.5",
+                      color: colors.purple,
+                      opacity: 0.9,
+                    }}
+                  >
+                    {rep.details}
+                  </p>
                 </div>
+              );
+            })
 
-                {/* Meta Info */}
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "13px",
-                    color: colors.purpleDark,
-                    opacity: 0.7,
-                    marginBottom: "10px",
-                  }}
-                >
-                  {rep.location_name} • {new Date(rep.created_at).toLocaleString()}
-                </p>
-
-                {/* Description */}
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "14px",
-                    lineHeight: "20px",
-                    color: colors.purpleDark,
-                  }}
-                >
-                  {rep.details}
-                </p>
-              </div>
-            ))
           )}
 
         </div>

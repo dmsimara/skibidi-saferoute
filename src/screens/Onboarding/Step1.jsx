@@ -93,7 +93,7 @@ export default function Step1({ onNext }) {
           <p
             style={{
               marginTop: "10px",
-              fontSize: "15px",
+              fontSize: "18px",
               opacity: 0.9,
               lineHeight: "1.45",
               maxWidth: "90%",
@@ -102,8 +102,9 @@ export default function Step1({ onNext }) {
               marginBottom: "14px",
             }}
           >
-            Find safer routes. Share insights. Travel with confidence.
-            Every report, reminder, and act of care helps make our community safer.
+            Every route is rated based on lighting, crowd density, and time-of-day.
+            <br />
+            Choose the path that matches your comfort level, not just the clock.
           </p>
 
           {/* TERMS HEADER */}
@@ -140,7 +141,8 @@ export default function Step1({ onNext }) {
               <span>
                 I confirm that I am{" "}
                 <span style={purpleStrong}>at least 18 years old</span> and I understand the
-                terms, conditions, and community guidelines stated above.
+                terms, conditions, and community guidelines stated above, including my responsibilities
+                for truthful reporting and respectful community participation.
               </span>
             </label>
 

@@ -7,6 +7,13 @@ import OutlineButton from "./OutlineButton";
 export default function ConfirmSubmitModal({ isOpen, onClose, onConfirm }) {
   if (!isOpen) return null;
 
+  const handleQuickExit = () => {
+    sessionStorage.removeItem("reportDraft");
+    localStorage.removeItem("reportDraft");
+    sessionStorage.setItem("liwa_quick_exit", "1");
+    window.location.assign("/home");
+  };
+
   return (
     <div
       style={{
@@ -15,9 +22,11 @@ export default function ConfirmSubmitModal({ isOpen, onClose, onConfirm }) {
         background: "rgba(0,0,0,0.35)",
         backdropFilter: "blur(4px)",
         display: "flex",
+        flexDirection: "column", // ✅ makes items stack vertically
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center", // ✅ centers both modal + button
         zIndex: 9999,
+        padding: "24px", // ✅ optional safety so it doesn’t touch edges on small screens
       }}
     >
       <div
@@ -129,6 +138,41 @@ export default function ConfirmSubmitModal({ isOpen, onClose, onConfirm }) {
           </PrimaryButton>
         </div>
       </div>
+
+      {/* QUICK EXIT — below modal */}
+      <button
+        type="button"
+        onClick={handleQuickExit}
+        style={{
+          marginTop: "26px",
+          background: "#330972",
+          color: "#fff",
+          border: "none",
+          borderRadius: "22px",
+          padding: "10px 18px",
+          fontSize: "13px",
+          fontWeight: 600,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        {/* White icon */}
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M13 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-3 17v-6l-2 2-2-2 3.5-3.5c.4-.4.9-.6 1.4-.6H13c.6 0 1.1.2 1.5.6L17 15l-2 2-2-2v7h-3Zm9-9h-4v-2h4v2Z"
+            fill="#FFFFFF"
+          />
+        </svg>
+        Quick-exit
+      </button>
     </div>
   );
 }
