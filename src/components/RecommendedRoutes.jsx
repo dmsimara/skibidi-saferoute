@@ -17,65 +17,65 @@ export default function RecommendedRoutes({ place, onSelectRoute, onBack }) {
     const [showLocationAccess, setShowLocationAccess] = useState(false);
     const [showLiveShare, setShowLiveShare] = useState(false);
 
+    const [openWhyRouteId, setOpenWhyRouteId] = useState(null);
 
     if (!place) return null;
 
     const routes = [
         {
             id: "r1",
+            status: "Generally Safe",
             safety: "Safe",
-            distanceKm: 2.3,
-            durationMin: 9,
-            tags: [
-                "Well-Lit Areas",
-                "Main Roads",
-                "CCTV Coverage",
-                "Frequent Pedestrians"
-            ],
+            distanceKm: 1.0,
+            durationMin: 12,
+            description:
+                "This route has consistently shown low safety risk based on recent community reports and environmental indicators. Lighting is good, crowds are present, and conditions remain stable.",
+            tags: ["Good Lighting", "Moderate Crowd"],
         },
         {
             id: "r2",
+            status: "Use Caution",
             safety: "Moderately Safe",
-            distanceKm: 2.7,
-            durationMin: 11,
-            tags: [
-                "Mixed Lighting",
-                "Residential Streets",
-                "Light Traffic",
-                "Occasional Pedestrians"
-            ],
+            distanceKm: 1.4,
+            durationMin: 16,
+            description:
+                "Some segments may have reduced lighting or lower foot traffic at certain hours. Stay alert and consider traveling during busier times.",
+            tags: ["Mixed Lighting", "Low Foot Traffic"],
         },
         {
             id: "r3",
+            status: "Avoid if Possible",
             safety: "Unsafe",
-            distanceKm: 1.9,
-            durationMin: 7,
-            tags: [
-                "Low Lighting",
-                "Quiet Zones",
-                "Few Establishments",
-                "Minimal Crowd"
-            ],
+            distanceKm: 0.9,
+            durationMin: 10,
+            description:
+                "Community reports indicate frequent safety concerns in this area, especially at night. Consider using an alternative route if possible.",
+            tags: ["Poor Lighting", "Quiet Area"],
         },
     ];
 
-    const safetyColors = {
-        Safe: { bg: "#D9F7BE", text: "#0F9D58" },
-        "Moderately Safe": { bg: "#FFE8B0", text: "#C98A00" },
-        Unsafe: { bg: "#FFD6D6", text: "#C53D3D" },
+
+    const statusMeta = {
+        Safe: { color: "#09B000" },
+        "Generally Safe": { color: "#FFC727" },
+        "Use Caution": { color: "#FF9327" },
+        "Avoid if Possible": { color: "#FF0000" },
     };
 
-    const bullet = (
+    const bulletDot = (
         <span
             style={{
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "#FFC000",
+                background: "#FFC727",
                 display: "inline-block",
             }}
         />
     );
+
+    // ✅ Always-green info icon color (as you requested)
+    const INFO_GREEN = "#09B000";
 
     return (
         <>
@@ -139,7 +139,6 @@ export default function RecommendedRoutes({ place, onSelectRoute, onBack }) {
                 onClose={() => setShowLiveShare(false)}
             />
 
-
             {/* MAIN UI */}
             <div
                 style={{
@@ -190,179 +189,324 @@ export default function RecommendedRoutes({ place, onSelectRoute, onBack }) {
                 </div>
 
                 {/* ROUTE CARDS */}
-                {routes.map((route) => (
-                    <div
-                        key={route.id}
-                        style={{
-                            border: "1px solid #DADCF3",
-                            borderRadius: 14,
-                            padding: "22px 24px",
-                            marginBottom: 25,
-                            background: "white",
-                        }}
-                    >
-                        {/* Current Location + Safety */}
+                {routes.map((route) => {
+                    const meta = statusMeta[route.status] || statusMeta["Generally Safe"];
+                    const isWhyOpen = openWhyRouteId === route.id;
+
+                    return (
                         <div
+                            key={route.id}
                             style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                marginBottom: 12,
+                                border: "1px solid #DADCF3",
+                                borderRadius: 14,
+                                padding: "18px 20px",
+                                marginBottom: 22,
+                                background: "white",
                             }}
                         >
-                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                                {bullet}
-                                <span style={{ fontSize: 13, color: "#555" }}>
-                                    Current Location
-                                </span>
-                            </div>
-
-                            <span
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    padding: "4px 12px",
-                                    borderRadius: 20,
-                                    fontSize: 12,
-                                    fontWeight: 600,
-                                    background: safetyColors[route.safety].bg,
-                                    color: safetyColors[route.safety].text,
-                                    border: `2px solid ${safetyColors[route.safety].text}`,
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        width: 10,
-                                        height: 10,
-                                        borderRadius: "50%",
-                                        background: safetyColors[route.safety].text,
-                                    }}
-                                />
-                                {route.safety}
-                            </span>
-                        </div>
-
-                        {/* Divider */}
-                        <div
-                            style={{
-                                width: "100%",
-                                height: 1,
-                                backgroundColor: "#E5E7FB",
-                                marginTop: 6,
-                            }}
-                        />
-
-                        {/* Destination + Distance */}
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                            }}
-                        >
-                            <h3
-                                style={{
-                                    fontSize: 18,
-                                    fontWeight: 700,
-                                    color: "#2D2A73",
-                                }}
-                            >
-                                {place.name}
-                            </h3>
-
+                            {/* Top: Current Location */}
                             <div
                                 style={{
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: 12,
-                                    fontWeight: 600,
-                                    color: "#2D2A73",
-                                    fontSize: 15,
+                                    gap: 8,
+                                    paddingBottom: 10,
+                                    borderBottom: "1px solid #E8E9FF",
                                 }}
                             >
-                                <span>{route.distanceKm}km</span>
-                                {bullet}
-                                <span>{route.durationMin} min</span>
+                                <span
+                                    style={{
+                                        fontSize: 13,
+                                        color: "#2D2A73",
+                                        opacity: 0.85,
+                                    }}
+                                >
+                                    Current Location
+                                </span>
                             </div>
-                        </div>
 
-                        {/* Tags */}
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: 25,
-                                alignItems: "center",
-                                marginBottom: 18,
-                            }}
-                        >
-                            {route.tags.map((tag, i) => (
+                            {/* Title row */}
+                            <div
+                                style={{
+                                    marginTop: 14,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    gap: 12,
+                                }}
+                            >
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        fontSize: 22,
+                                        fontWeight: 800,
+                                        color: "#2D2A73",
+                                    }}
+                                >
+                                    {place.name}
+                                </h3>
+
                                 <div
-                                    key={i}
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
-                                        gap: 6,
-                                        fontSize: 14,
-                                        color: "#555",
+                                        gap: 12,
+                                        color: "#2D2A73",
+                                        fontSize: 13,
+                                        fontWeight: 600,
                                     }}
                                 >
-                                    {bullet}
-                                    {tag}
+                                    <span>{route.distanceKm}km</span>
+                                    <span style={{ color: "#FFC727" }}>•</span>
+                                    <span>{route.durationMin} min</span>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
 
-                        {/* Bottom Buttons */}
-                        <div
-                            style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}
-                        >
-                            {/* Flag Button */}
-                            <button
-                                onClick={() => setShowFlagModal(true)}
+                            {/* Status row (icon ALWAYS GREEN + clickable popover) */}
+                            <div
                                 style={{
-                                    width: 45,
-                                    height: 45,
-                                    borderRadius: 12,
-                                    border: "2px solid transparent",
-                                    background: "white",
-                                    cursor: "pointer",
+                                    marginTop: 10,
                                     display: "flex",
                                     alignItems: "center",
-                                    justifyContent: "center",
+                                    gap: 10,
+                                    position: "relative", // ✅ anchor popover to this row
                                 }}
                             >
-                                <img src={flagIcon} alt="flag" style={{ width: 22 }} />
-                            </button>
+                                {/* ✅ Clickable info icon (ALWAYS #09B000) */}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setOpenWhyRouteId((prev) => (prev === route.id ? null : route.id))
+                                    }
+                                    style={{
+                                        width: 18,
+                                        height: 18,
+                                        borderRadius: "50%",
+                                        border: `2px solid ${INFO_GREEN}`,
+                                        background: "transparent",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontSize: 11,
+                                        fontWeight: 900,
+                                        color: INFO_GREEN,
+                                        lineHeight: 1,
+                                        cursor: "pointer",
+                                        padding: 0,
+                                    }}
+                                    aria-label="Why this route?"
+                                >
+                                    i
+                                </button>
 
-                            {/* View Route */}
-                            <button
-                                onClick={() => onSelectRoute(route)}
+                                {/* Status pill (color depends on status) */}
+                                <span
+                                    style={{
+                                        padding: "4px 12px",
+                                        borderRadius: 18,
+                                        fontSize: 12,
+                                        fontWeight: 700,
+                                        color: meta.color,
+                                        border: `2px solid ${meta.color}`,
+                                        background: "#FFFFFF",
+                                    }}
+                                >
+                                    {route.status}
+                                </span>
+
+                                {/* ✅ Popover modal (exactly below the icon/row area) */}
+                                {isWhyOpen && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            left: 0,
+                                            top: 30, // just below row
+                                            width: 330,
+                                            background: "#2D2A73",
+                                            borderRadius: 12,
+                                            padding: "14px 16px",
+                                            color: "white",
+                                            boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
+                                            zIndex: 20,
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 10,
+                                                justifyContent: "center",
+                                                marginBottom: 10,
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: 22,
+                                                    height: 22,
+                                                    borderRadius: "50%",
+                                                    border: "2px solid rgba(255,255,255,0.85)",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontWeight: 900,
+                                                    fontSize: 12,
+                                                    lineHeight: 1,
+                                                }}
+                                            >
+                                                i
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontWeight: 900,
+                                                    fontSize: 13,
+                                                    letterSpacing: 0.6,
+                                                }}
+                                            >
+                                                WHY THIS ROUTE?
+                                            </div>
+                                        </div>
+
+                                        <p
+                                            style={{
+                                                margin: 0,
+                                                fontSize: 12,
+                                                lineHeight: "16px",
+                                                opacity: 0.95,
+                                                fontStyle: "italic",
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            Safety rating based on aggregated, anonymous community signals and
+                                            environmental indicators.
+                                        </p>
+
+                                        <p
+                                            style={{
+                                                margin: "10px 0 0",
+                                                fontSize: 12,
+                                                lineHeight: "16px",
+                                                opacity: 0.9,
+                                                fontStyle: "italic",
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            LIWA does not track individual users or show exact incident locations.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Description */}
+                            <p
                                 style={{
-                                    padding: "5px 15px",
-                                    borderRadius: 20,
-                                    border: "2px solid #4B3EC8",
-                                    background: "white",
-                                    color: "#4B3EC8",
-                                    fontWeight: 700,
-                                    cursor: "pointer",
-                                    fontSize: 15,
-                                    transition: "0.2s ease",
-                                }}
-                                onMouseOver={(e) => {
-                                    e.target.style.background = "#4B3EC8";
-                                    e.target.style.color = "white";
-                                }}
-                                onMouseOut={(e) => {
-                                    e.target.style.background = "white";
-                                    e.target.style.color = "#4B3EC8";
+                                    marginTop: 12,
+                                    marginBottom: 14,
+                                    fontSize: 12,
+                                    lineHeight: "16px",
+                                    color: "#5B57A6",
+                                    fontStyle: "italic",
+                                    opacity: 0.95,
                                 }}
                             >
-                                View Route
-                            </button>
+                                {route.description}
+                            </p>
+
+                            {/* Divider (NO avatar) */}
+                            <div
+                                style={{
+                                    height: 1,
+                                    background: "#E8E9FF",
+                                    width: "100%",
+                                    marginBottom: 12,
+                                }}
+                            />
+
+                            {/* Bottom tags + actions */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: 14,
+                                    flexWrap: "wrap",
+                                }}
+                            >
+                                {/* Tags (left) */}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 22,
+                                        flexWrap: "wrap",
+                                        color: "#2D2A73",
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {route.tags.map((t, i) => (
+                                        <span
+                                            key={i}
+                                            style={{ display: "flex", alignItems: "center", gap: 8 }}
+                                        >
+                                            {bulletDot}
+                                            {t}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* Actions (right) */}
+                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                    {/* Flag */}
+                                    <button
+                                        onClick={() => setShowFlagModal(true)}
+                                        style={{
+                                            width: 42,
+                                            height: 42,
+                                            borderRadius: 12,
+                                            border: "2px solid transparent",
+                                            background: "white",
+                                            cursor: "pointer",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <img src={flagIcon} alt="flag" style={{ width: 20 }} />
+                                    </button>
+
+                                    {/* View Route */}
+                                    <button
+                                        onClick={() => onSelectRoute(route)}
+                                        style={{
+                                            padding: "6px 16px",
+                                            borderRadius: 20,
+                                            border: "2px solid #4B3EC8",
+                                            background: "white",
+                                            color: "#4B3EC8",
+                                            fontWeight: 700,
+                                            cursor: "pointer",
+                                            fontSize: 13,
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: 10,
+                                            transition: "0.2s ease",
+                                        }}
+                                        onMouseOver={(e) => {
+                                            e.currentTarget.style.background = "#4B3EC8";
+                                            e.currentTarget.style.color = "white";
+                                        }}
+                                        onMouseOut={(e) => {
+                                            e.currentTarget.style.background = "white";
+                                            e.currentTarget.style.color = "#4B3EC8";
+                                        }}
+                                    >
+                                        View Route
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </>
     );

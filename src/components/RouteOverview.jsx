@@ -9,7 +9,7 @@ import ReportDetailsModal from "./ReportDetailsModal";
 import HeartButton from "./HeartButton";
 import flagIcon from "../assets/images/home/flag.webp";
 import HeartConfirmModal from "./HeartConfirmModal";
-import FlagRouteModal from "./FlagRouteModal";  
+import FlagRouteModal from "./FlagRouteModal";
 
 export default function RouteOverview({ route, place, onBack, onStartNavigation }) {
     const [showFlagModal, setShowFlagModal] = useState(false);
@@ -297,7 +297,7 @@ export default function RouteOverview({ route, place, onBack, onStartNavigation 
                         alignItems: "center",
                     }}
                 >
-                    <div style={{ display: "flex", gap: 20, fontSize: 14, opacity: 0.8 }}>
+                    <div style={{ display: "flex", gap: 20, fontSize: 16, opacity: 0.8 }}>
                         {route.tags.map((tag, i) => (
                             <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                                 {bullet}
@@ -329,7 +329,14 @@ export default function RouteOverview({ route, place, onBack, onStartNavigation 
                     Accessibility
                 </h3>
 
-                <ul style={{ paddingLeft: 20, marginBottom: 25, opacity: 0.9 }}>
+                <ul
+                    style={{
+                        listStyle: "none",
+                        paddingLeft: 0,
+                        marginBottom: 25,
+                        opacity: 0.9,
+                    }}
+                >
                     <li>Biker’s Lane</li>
                     <li>Wheelchair Accessible Parking Lot</li>
                 </ul>
@@ -343,86 +350,6 @@ export default function RouteOverview({ route, place, onBack, onStartNavigation 
                         marginBottom: 20,
                     }}
                 />
-
-                {/* SAFETY REPORTS */}
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: colors.purpleDark }}>
-                    Route Safety Reports
-                </h3>
-
-                {nearbyReports.length === 0 && (
-                    <p style={{ opacity: 0.7, marginBottom: 20 }}>
-                        No reports near this route.
-                    </p>
-                )}
-
-                {nearbyReports.map((r, i) => {
-                    const date = new Date(r.created_at).toLocaleDateString();
-
-                    return (
-                        <div
-                            key={i}
-                            style={{
-                                padding: "16px 18px",
-                                borderRadius: 12,
-                                border: "1px solid #E5E5F0",
-                                marginBottom: 20,
-                            }}
-                        >
-                            {/* STARS */}
-                            <div style={{ marginBottom: 6 }}>{renderStars(r.likes)}</div>
-
-                            {/* DATE + HEART */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    marginBottom: 10,
-                                }}
-                            >
-                                <p style={{ opacity: 0.6, fontSize: 12, margin: 0 }}>{date}</p>
-
-                                <HeartButton
-                                    liked={r.liked}
-                                    onToggle={() => {
-                                        setReportToLike(r);
-                                        setShowHeartConfirm(true);
-                                    }}
-                                />
-                            </div>
-
-                            {/* DESCRIPTION + BUTTON */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    gap: 15,
-                                }}
-                            >
-                                <p style={{ fontSize: 14, margin: 0, flex: 1 }}>{r.details}</p>
-
-                                <button
-                                    onClick={() => {
-                                        setSelectedReview(r);
-                                        setShowReviewConfirm(true);
-                                    }}
-                                    style={{
-                                        padding: "6px 12px",
-                                        borderRadius: 10,
-                                        border: `2px solid ${colors.purple}`,
-                                        background: "white",
-                                        color: colors.purple,
-                                        fontWeight: 600,
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    View Review
-                                </button>
-                            </div>
-                        </div>
-                    );
-                })}
 
                 {/* WRITE REVIEW BUTTON */}
                 <div style={{ textAlign: "center" }}>
